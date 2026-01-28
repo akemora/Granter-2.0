@@ -14,6 +14,165 @@ This document tells you:
 
 ---
 
+## 🚀 NEW SESSION ONBOARDING (REQUIRED READING)
+
+**If you're starting work on GRANTER v2 for the first time in this session, you MUST read these documents in order:**
+
+### Phase 1: Project Overview (15 minutes)
+```
+1. README.md (root)
+   → Project vision, key features, current status
+   → Go-live date: March 3, 2026
+   → Status: Production Ready, 84/84 tests passing
+
+2. HOW_TO_RUN.md (root)
+   → How to start the application locally
+   → Prerequisites & quick start
+   → Troubleshooting common issues
+```
+
+### Phase 2: Architecture & Design (20 minutes)
+```
+3. docs/development/ARCHITECTURE_OVERVIEW.md
+   → System components (backend, frontend, data-service)
+   → How services communicate
+   → Database schema overview
+   → 2-tier scraper architecture
+
+4. API_REFERENCE.md (from docs/development/)
+   → All 13 API endpoints
+   → Request/response formats
+   → Authentication patterns
+   → Error responses
+```
+
+### Phase 3: Code Standards & Conventions (15 minutes)
+```
+5. CONVENTIONS.md (root)
+   → Backend code style & standards
+   → NestJS patterns
+   → Database conventions
+   → Testing patterns for backend
+
+6. CONVENTIONS_FRONTEND.md (root)
+   → Frontend code style & standards
+   → React/Next.js patterns
+   → Component structure (atoms, molecules, organisms)
+   → CSS/Tailwind conventions
+```
+
+### Phase 4: Security & Testing (10 minutes)
+```
+7. docs/development/TESTING_GUIDE.md
+   → Testing strategy (80% unit, 15% integration, 5% E2E)
+   → How to run tests locally
+   → Coverage requirements (>70%)
+
+8. docs/sprints/SPRINT_4_SECURITY_CHECKLIST.md
+   → Security requirements (96.2% complete)
+   → JWT FAIL SECURE pattern
+   → Token rotation requirements
+   → Critical security rules
+```
+
+### Phase 5: Deployment & Operations (5 minutes)
+```
+9. docs/sprints/SPRINT_4_DEPLOYMENT_RUNBOOK.md
+   → How to deploy to production
+   → Pre-deployment checklist
+   → Rollback procedures
+
+10. AGENTS.md (this file)
+    → Work guidelines & MCP assignments
+    → How to classify and execute tasks
+    → Escalation procedures
+```
+
+### ✅ First Session Checklist
+```
+[ ] Read README.md
+[ ] Read HOW_TO_RUN.md
+[ ] Read ARCHITECTURE_OVERVIEW.md
+[ ] Read API_REFERENCE.md
+[ ] Read CONVENTIONS.md
+[ ] Read CONVENTIONS_FRONTEND.md
+[ ] Read TESTING_GUIDE.md
+[ ] Read SPRINT_4_SECURITY_CHECKLIST.md
+[ ] Read SPRINT_4_DEPLOYMENT_RUNBOOK.md
+[ ] Read AGENTS.md (this file)
+[ ] Ready to work? → Proceed to task assignment
+```
+
+**Total Reading Time:** ~75 minutes
+**Frequency:** First time only (bookmark this for quick reference on future sessions)
+
+### 📂 Project Documentation Organization
+
+All documentation is organized in the GRANTER 2.0 root directory:
+
+```
+GRANTER 2.0/
+├── README.md                          ← START HERE
+├── HOW_TO_RUN.md                      ← How to run locally
+├── AGENTS.md                          ← This file (work guidelines)
+├── CONVENTIONS.md                     ← Backend code standards (REQUIRED)
+├── CONVENTIONS_FRONTEND.md            ← Frontend code standards (REQUIRED)
+│
+├── docs/
+│   ├── README.md                      ← Documentation index
+│   ├── development/                   ← Developer guides
+│   │   ├── ARCHITECTURE_OVERVIEW.md
+│   │   ├── API_REFERENCE.md
+│   │   ├── TESTING_GUIDE.md
+│   │   ├── DEVELOPMENT_GUIDE.md
+│   │   └── TROUBLESHOOTING_QUICK_FIX.md
+│   ├── sprints/                       ← Sprint reports & deployment
+│   │   ├── SPRINT_4_FINAL_REPORT.md
+│   │   ├── SPRINT_4_SECURITY_CHECKLIST.md
+│   │   ├── SPRINT_4_DEPLOYMENT_RUNBOOK.md
+│   │   └── SPRINT_4_GO_LIVE_GUIDE.md
+│   ├── audits/                        ← Security & architecture audits
+│   ├── proposals/                     ← Initial design proposals
+│   └── project/                       ← Project summaries & conventions
+│
+└── apps/                              ← Source code
+    ├── backend-core/                  ← NestJS backend
+    ├── web-frontend/                  ← Next.js frontend
+    └── data-service/                  ← FastAPI data service
+```
+
+**Rule:** If you're unsure where a document is, check `docs/README.md` for the full index.
+
+---
+
+## ⏱️ Quick Reference (Returning Users)
+
+If you've already read the onboarding documents, use this quick checklist:
+
+```
+1. Know your task type (A-F)?
+   → Use MCP Decision Matrix below
+   → Check if it's security → Use Gemini
+   → Check if it's simple → Use Haiku
+   → Otherwise → Use Sonnet
+
+2. Review critical rules?
+   → JWT, tokens, secrets, coverage, reviews
+
+3. Check code quality checklist?
+   → Before marking task DONE
+
+→ GO! 🚀
+```
+
+**Bookmark these for this session:**
+- **Task Help:** See "📋 Task Classification & Workflow" section
+- **MCP Choice:** See "📊 MCP Decision Matrix" section
+- **Rules:** See "🔐 Critical Rules" section
+- **Conventions:** Check CONVENTIONS.md or CONVENTIONS_FRONTEND.md
+
+---
+
 ## 🎯 Your Role
 
 ### If You're an AI Agent:
@@ -495,19 +654,57 @@ These violations cause automatic rejection. NO EXCEPTIONS.
 
 ---
 
-## 📚 Reference Documents
+## 📚 Complete Reference Documents
 
-| Need | Document | Purpose |
-|------|----------|---------|
-| **How to run locally** | HOW_TO_RUN.md | Local development setup |
-| **API documentation** | API_REFERENCE.md | All endpoints & examples |
-| **System design** | ARCHITECTURE_OVERVIEW.md | System components & flow |
-| **Backend conventions** | CONVENTIONS.md | Code style & standards |
-| **Frontend conventions** | CONVENTIONS_FRONTEND.md | Frontend code style |
-| **Testing guide** | TESTING_GUIDE.md | Testing strategy |
-| **Security details** | PROPUESTA_SEGURIDAD_DESDE_0.md | Security implementation |
-| **Deployment steps** | SPRINT_4_DEPLOYMENT_RUNBOOK.md | Production deployment |
-| **Security checklist** | SPRINT_4_SECURITY_CHECKLIST.md | Security validation |
+### 🏃 Getting Started
+| Document | What It Contains | When to Read |
+|----------|-----------------|--------------|
+| **README.md** | Project overview, key features, status | First session only |
+| **HOW_TO_RUN.md** | Local setup, troubleshooting, quick start | First session, then bookmark |
+
+### 🏗️ Architecture & Design
+| Document | What It Contains | When to Read |
+|----------|-----------------|--------------|
+| **ARCHITECTURE_OVERVIEW.md** | System components, service communication, database design | First session + before major changes |
+| **API_REFERENCE.md** | All 13 API endpoints, auth patterns, error handling | Before API work |
+| **PROPUESTA_ARQUITECTURA_DESDE_0.md** | Initial architecture design decisions (deep dive) | If architecture questions arise |
+
+### 📝 Code Standards (REQUIRED FOR ALL CODE)
+| Document | What It Contains | When to Read |
+|----------|-----------------|--------------|
+| **CONVENTIONS.md** | Backend: NestJS patterns, TypeORM, testing, error handling | Before writing any backend code |
+| **CONVENTIONS_FRONTEND.md** | Frontend: React patterns, component structure, styling, testing | Before writing any frontend code |
+
+### 🧪 Testing & Quality
+| Document | What It Contains | When to Read |
+|----------|-----------------|--------------|
+| **TESTING_GUIDE.md** | Testing strategy, how to write tests, coverage requirements | Before writing tests |
+| **PROJECT_COMPLETION_SUMMARY.md** | Overall project stats (84/84 tests, 85%+ coverage) | Reference |
+
+### 🔐 Security & Compliance
+| Document | What It Contains | When to Read |
+|----------|-----------------|--------------|
+| **SPRINT_4_SECURITY_CHECKLIST.md** | Security requirements, JWT patterns, token rotation | Before security work |
+| **PROPUESTA_SEGURIDAD_DESDE_0.md** | Detailed security implementation guide (deep dive) | If security questions arise |
+
+### 🚀 Deployment & Operations
+| Document | What It Contains | When to Read |
+|----------|-----------------|--------------|
+| **SPRINT_4_DEPLOYMENT_RUNBOOK.md** | Step-by-step deployment procedures | Before deploying |
+| **SPRINT_4_GO_LIVE_GUIDE.md** | Go-live procedures and schedule | Before go-live |
+
+### 📋 Development Documentation (Historical Reference)
+| Document | What It Contains | When to Read |
+|----------|-----------------|--------------|
+| **SPRINT_4_FINAL_REPORT.md** | Final project status and deliverables | Optional, historical context |
+| **docs/README.md** | Full documentation index | If you need to find something specific |
+
+### 📚 Additional Resources
+| Resource | Location | Purpose |
+|----------|----------|---------|
+| **Audit Reports** | docs/audits/ | Security & architecture analysis (optional deep dives) |
+| **Proposals** | docs/proposals/ | Initial design proposals (historical reference) |
+| **Sprint Reports** | docs/sprints/ | Sprint-by-sprint progress (historical reference) |
 
 ---
 
