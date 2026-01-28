@@ -13,7 +13,9 @@ export const typeOrmConfigFactory = (
     synchronize: !isProduction,
     logging: !isProduction,
     entities: [__dirname + `/entities/*.${extension}`],
-    migrations: [__dirname + `/migrations/*.${extension}`],
+    migrations: [],
     autoLoadEntities: true,
+    migrationsRun: false,
+    dropSchema: false,
   };
 };
