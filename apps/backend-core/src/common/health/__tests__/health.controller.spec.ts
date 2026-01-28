@@ -56,6 +56,9 @@ describe('HealthController', () => {
           database: 'down' as const,
           api: 'up' as const,
         },
+        metrics: {
+          memoryUsage: 50,
+        },
       };
 
       jest.spyOn(service, 'checkHealth').mockResolvedValue(mockHealth);
@@ -74,6 +77,9 @@ describe('HealthController', () => {
         timestamp: new Date().toISOString(),
         uptime: 3600,
         services: { database: 'up' as const, api: 'up' as const },
+        metrics: {
+          memoryUsage: 50,
+        },
       };
 
       jest.spyOn(service, 'checkHealth').mockResolvedValue(mockHealth);
@@ -89,6 +95,9 @@ describe('HealthController', () => {
         timestamp: new Date().toISOString(),
         uptime: 3600,
         services: { database: 'down' as const, api: 'up' as const },
+        metrics: {
+          memoryUsage: 50,
+        },
       };
 
       jest.spyOn(service, 'checkHealth').mockResolvedValue(mockHealth);

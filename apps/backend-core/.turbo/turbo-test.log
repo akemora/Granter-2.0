@@ -2,24 +2,1817 @@
 > @granter/backend-core@0.1.0 test
 > jest
 
-PASS src/auth/__tests__/auth.service.spec.ts (7.031 s)
-PASS src/auth/__tests__/register.dto.spec.ts (9.295 s)
-PASS src/grants/__tests__/create-grant.dto.spec.ts (9.295 s)
-[Nest] 30680  - 01/28/2026, 12:27:25 AM   ERROR [XServiceTokenGuard] SERVICE_TOKEN is not configured
-PASS src/common/guards/__tests__/x-service-token.guard.spec.ts (10.096 s)
-[Nest] 30680  - 01/28/2026, 12:27:25 AM    WARN [XServiceTokenGuard] Invalid X-Service-Token provided
-[Nest] 30680  - 01/28/2026, 12:27:25 AM    WARN [XServiceTokenGuard] Missing X-Service-Token header
-[Nest] 30672  - 01/28/2026, 12:27:26 AM   ERROR [JwtStrategy] JWT secret is missing or too short (minimum 32 chars)
-[Nest] 30672  - 01/28/2026, 12:27:26 AM   ERROR [JwtStrategy] JWT secret is missing or too short (minimum 32 chars)
-PASS src/auth/__tests__/jwt.strategy.spec.ts (11.153 s)
-[Nest] 30672  - 01/28/2026, 12:27:26 AM    WARN [JwtStrategy] Invalid JWT payload: missing sub
-[Nest] 30672  - 01/28/2026, 12:27:26 AM    WARN [JwtStrategy] Invalid JWT payload types
-PASS src/auth/__tests__/password.service.spec.ts (11.643 s)
+PASS src/auth/__tests__/auth.service.spec.ts
+PASS src/auth/__tests__/register.dto.spec.ts
+PASS src/grants/__tests__/create-grant.dto.spec.ts
+[31m[Nest] 362  - [39m01/28/2026, 3:57:33 PM [31m  ERROR[39m [38;5;3m[XServiceTokenGuard] [39m[31mSERVICE_TOKEN is not configured[39m
+PASS src/common/guards/__tests__/x-service-token.guard.spec.ts
+PASS src/search/__tests__/search-filters.dto.spec.ts
+FAIL src/scraper/__tests__/scraper.e2e.spec.ts
+  ● Test suite failed to run
 
-Test Suites: 6 passed, 6 total
-Tests:       20 passed, 20 total
+    [96msrc/scraper/__tests__/scraper.e2e.spec.ts[0m:[93m82[0m:[93m13[0m - [91merror[0m[90m TS7018: [0mObject literal's property 'links' implicitly has an 'any[]' type.
+
+    [7m82[0m             links: [],
+    [7m  [0m [91m            ~~~~~~~~~[0m
+    [96msrc/scraper/__tests__/scraper.e2e.spec.ts[0m:[93m139[0m:[93m9[0m - [91merror[0m[90m TS7018: [0mObject literal's property 'pages' implicitly has an 'any[]' type.
+
+    [7m139[0m         pages: [],
+    [7m   [0m [91m        ~~~~~~~~~[0m
+    [96msrc/scraper/__tests__/scraper.e2e.spec.ts[0m:[93m163[0m:[93m9[0m - [91merror[0m[90m TS7018: [0mObject literal's property 'pages' implicitly has an 'any[]' type.
+
+    [7m163[0m         pages: [],
+    [7m   [0m [91m        ~~~~~~~~~[0m
+    [96msrc/scraper/__tests__/scraper.e2e.spec.ts[0m:[93m188[0m:[93m9[0m - [91merror[0m[90m TS7018: [0mObject literal's property 'pages' implicitly has an 'any[]' type.
+
+    [7m188[0m         pages: [],
+    [7m   [0m [91m        ~~~~~~~~~[0m
+
+[31m[Nest] 354  - [39m01/28/2026, 3:57:33 PM [31m  ERROR[39m [38;5;3m[JwtStrategy] [39m[31mJWT secret is missing or too short (minimum 32 chars)[39m
+[31m[Nest] 354  - [39m01/28/2026, 3:57:33 PM [31m  ERROR[39m [38;5;3m[JwtStrategy] [39m[31mJWT secret is missing or too short (minimum 32 chars)[39m
+PASS src/auth/__tests__/jwt.strategy.spec.ts
+[33m[Nest] 362  - [39m01/28/2026, 3:57:33 PM [33m   WARN[39m [38;5;3m[XServiceTokenGuard] [39m[33mInvalid X-Service-Token provided[39m
+[33m[Nest] 362  - [39m01/28/2026, 3:57:33 PM [33m   WARN[39m [38;5;3m[XServiceTokenGuard] [39m[33mMissing X-Service-Token header[39m
+[33m[Nest] 354  - [39m01/28/2026, 3:57:33 PM [33m   WARN[39m [38;5;3m[JwtStrategy] [39m[33mInvalid JWT payload: missing sub[39m
+[33m[Nest] 354  - [39m01/28/2026, 3:57:33 PM [33m   WARN[39m [38;5;3m[JwtStrategy] [39m[33mInvalid JWT payload types[39m
+[31m[Nest] 329  - [39m01/28/2026, 3:57:33 PM [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (1)...[39m
+error: password authentication failed for user "test"
+    at parseErrorMessage (/home/akenator/PROYECTOS/GRANTER 2.0/node_modules/pg-protocol/src/parser.ts:394:9)
+    at Parser.handlePacket (/home/akenator/PROYECTOS/GRANTER 2.0/node_modules/pg-protocol/src/parser.ts:212:19)
+    at Parser.parse (/home/akenator/PROYECTOS/GRANTER 2.0/node_modules/pg-protocol/src/parser.ts:105:30)
+    at Socket.<anonymous> (/home/akenator/PROYECTOS/GRANTER 2.0/node_modules/pg-protocol/src/index.ts:7:48)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Socket.Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23)
+PASS src/search/__tests__/search.service.spec.ts
+PASS src/common/health/__tests__/health.controller.spec.ts
+[31m[Nest] 393  - [39m01/28/2026, 3:57:33 PM [31m  ERROR[39m [38;5;3m[ScraperService] [39m[31m✗ GenericScraper failed: GenericScraper error[39m
+[31m[Nest] 393  - [39m01/28/2026, 3:57:33 PM [31m  ERROR[39m [38;5;3m[ScraperService] [39m[31m✗ All scraping methods exhausted for https://example.com/grants[39m
+[31m[Nest] 393  - [39m01/28/2026, 3:57:33 PM [31m  ERROR[39m [38;5;3m[ScraperService] [39m[31m✗ GenericScraper failed: Invalid URL[39m
+[31m[Nest] 393  - [39m01/28/2026, 3:57:33 PM [31m  ERROR[39m [38;5;3m[ScraperService] [39m[31m✗ All scraping methods exhausted for not-a-url[39m
+[31m[Nest] 393  - [39m01/28/2026, 3:57:33 PM [31m  ERROR[39m [38;5;3m[ScraperService] [39m[31m✗ GenericScraper failed: Network error[39m
+[31m[Nest] 393  - [39m01/28/2026, 3:57:33 PM [31m  ERROR[39m [38;5;3m[ScraperService] [39m[31m✗ All scraping methods exhausted for https://example.com/grants[39m
+FAIL src/scraper/__tests__/scraper.service.spec.ts
+  ● ScraperService › error handling › should handle invalid URLs
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: "Invalid"
+    Received string:    "Scraping failed - all methods exhausted"
+
+      141 |
+      142 |       expect(result.success).toBe(false);
+    > 143 |       expect(result.error).toContain('Invalid');
+          |                            ^
+      144 |     });
+      145 |
+      146 |     it('should handle network errors', async () => {
+
+      at Object.<anonymous> (scraper/__tests__/scraper.service.spec.ts:143:28)
+
+FAIL src/search/__tests__/search.e2e.spec.ts
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Basic Search › should return all grants when no filters applied
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Basic Search › should search by query string
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Basic Search › should filter by single region
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Basic Search › should filter by multiple regions
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Basic Search › should filter by amount range
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Basic Search › should filter by deadline range
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Pagination › should paginate results with skip and take
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Pagination › should enforce maximum page size of 100
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Combined Filters › should combine multiple filters
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Validation & Error Handling › should reject invalid skip parameter (negative)
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Validation & Error Handling › should reject invalid take parameter (0 or negative)
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Validation & Error Handling › should reject empty search query
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Validation & Error Handling › should reject query exceeding max length
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Validation & Error Handling › should reject invalid date format
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Validation & Error Handling › should reject deadline range where after > before
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Validation & Error Handling › should reject minAmount > maxAmount
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Validation & Error Handling › should reject negative amounts
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Validation & Error Handling › should return 500 on database error
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Response Format › should return correct response structure
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Response Format › should return grants with all required fields
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+  ● Search E2E Integration Tests (S2-D3-3) › GET /search - Performance › should complete search within reasonable time
+
+    Nest can't resolve dependencies of the GrantEntityRepository (?). Please make sure that the argument DataSource at index [0] is available in the TypeOrmModule context.
+
+    Potential solutions:
+    - Is TypeOrmModule a valid NestJS module?
+    - If DataSource is a provider, is it part of the current TypeOrmModule?
+    - If DataSource is exported from a separate @Module, is that module imported within TypeOrmModule?
+      @Module({
+        imports: [ /* the Module containing DataSource */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      84 |
+      85 |   beforeAll(async () => {
+    > 86 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      87 |       imports: [SearchModule],
+      88 |       providers: [
+      89 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../../../node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (../../../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../../../node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (../../../node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (../../../node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (../../../node_modules/@nestjs/core/injector/injector.js:103:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../../../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../../../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstances (../../../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../../../node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (../../../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:86:35)
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading 'close')
+
+      126 |
+      127 |   afterAll(async () => {
+    > 128 |     await app.close();
+          |               ^
+      129 |   });
+      130 |
+      131 |   describe('GET /search - Basic Search', () => {
+
+      at Object.<anonymous> (search/__tests__/search.e2e.spec.ts:128:15)
+
+PASS src/auth/__tests__/password.service.spec.ts
+FAIL src/grants/grants.e2e.spec.ts
+  ● Test suite failed to run
+
+    [96msrc/grants/grants.service.ts[0m:[93m171[0m:[93m7[0m - [91merror[0m[90m TS2739: [0mType '{ id: string; }' is missing the following properties from type 'SourceEntity': name, url, region, active, createdAt
+
+    [7m171[0m       updateData.source = { id: dto.sourceId };
+    [7m   [0m [91m      ~~~~~~~~~~~~~~~~~[0m
+
+[33m[Nest] 331  - [39m01/28/2026, 3:57:33 PM [33m   WARN[39m [38;5;3m[PasswordService] [39m[33mPassword too short[39m
+[33m[Nest] 331  - [39m01/28/2026, 3:57:33 PM [33m   WARN[39m [38;5;3m[PasswordService] [39m[33mPassword missing required character classes[39m
+[31m[Nest] 329  - [39m01/28/2026, 3:57:36 PM [31m  ERROR[39m [38;5;3m[TypeOrmModule] [39m[31mUnable to connect to the database. Retrying (2)...[39m
+error: password authentication failed for user "test"
+    at parseErrorMessage (/home/akenator/PROYECTOS/GRANTER 2.0/node_modules/pg-protocol/src/parser.ts:394:9)
+    at Parser.handlePacket (/home/akenator/PROYECTOS/GRANTER 2.0/node_modules/pg-protocol/src/parser.ts:212:19)
+    at Parser.parse (/home/akenator/PROYECTOS/GRANTER 2.0/node_modules/pg-protocol/src/parser.ts:105:30)
+    at Socket.<anonymous> (/home/akenator/PROYECTOS/GRANTER 2.0/node_modules/pg-protocol/src/index.ts:7:48)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Socket.Readable.push (node:internal/streams/readable:390:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23)
+FAIL src/search/__tests__/search.integration.spec.ts (7.778 s)
+  ● SearchService Integration Tests › Full-Text Search › should find grants by single keyword in title
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Full-Text Search › should find grants by keyword in description
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Full-Text Search › should search by multiple words (AND behavior)
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Full-Text Search › should return empty array for no matches
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Single Filter Tests › should filter by single region (ES)
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Single Filter Tests › should filter by multiple regions (ES and EU)
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Single Filter Tests › should filter by amount range (min: 10k, max: 50k)
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Single Filter Tests › should filter by minimum amount only
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Single Filter Tests › should filter by maximum amount only
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Combined Filter Tests › should combine region and amount range filters
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Combined Filter Tests › should combine multiple regions and amount filter
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Combined Filter Tests › should combine search query with region filter
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Combined Filter Tests › should combine search query, region, and amount filters
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Deadline Range Filters › should filter by deadline after date
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Deadline Range Filters › should filter by deadline before date
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Deadline Range Filters › should filter by deadline range
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Deadline Range Filters › should combine deadline range with region filter
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Pagination Tests › should return results with default pagination (skip: 0, take: 20)
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Pagination Tests › should respect take parameter
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Pagination Tests › should enforce maximum page size (max 100)
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Pagination Tests › should calculate pagination metadata correctly
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Pagination Tests › should return correct page with skip and take
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Pagination Tests › should handle skip beyond total results
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Pagination Tests › should calculate correct totalPages
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Edge Cases › should return all grants without any filters
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Edge Cases › should handle empty array filters gracefully
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Edge Cases › should return results sorted by createdAt DESC
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Edge Cases › should handle boundary amount values
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Edge Cases › should include source relationship
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Edge Cases › should maintain data integrity with multiple searches
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw on negative skip parameter
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw on zero or negative take parameter
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw on empty search query
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw on whitespace-only search query
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw on excessively long search query
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw on negative minAmount
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw on negative maxAmount
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw when minAmount > maxAmount
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw on invalid deadlineAfter format
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw on invalid deadlineBefore format
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should throw when deadlineAfter >= deadlineBefore
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Error Handling › should handle invalid region without throwing
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Performance & Data Integrity › should complete search in reasonable time
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Performance & Data Integrity › should handle multiple filters without N+1 queries
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Performance & Data Integrity › should verify numeric precision for amounts
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Performance & Data Integrity › should return correct data types for all fields
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Performance & Data Integrity › should handle large result sets efficiently
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Complex Filter Combinations › should handle 3+ simultaneous filters
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Complex Filter Combinations › should combine all available filters
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Complex Filter Combinations › should return consistent results with different take values
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+  ● SearchService Integration Tests › Complex Filter Combinations › should maintain correct page metadata across combinations
+
+    thrown: "Exceeded timeout of 5000 ms for a hook.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      53 |   // ==================== Setup & Teardown ====================
+      54 |
+    > 55 |   beforeAll(async () => {
+         |   ^
+      56 |     const moduleFixture: TestingModule = await Test.createTestingModule({
+      57 |       imports: [
+      58 |         TypeOrmModule.forRoot({
+
+      at search/__tests__/search.integration.spec.ts:55:3
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:24:1)
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading 'close')
+
+      85 |
+      86 |   afterAll(async () => {
+    > 87 |     await app.close();
+         |               ^
+      88 |   });
+      89 |
+      90 |   // ==================== Seed Data ====================
+
+      at Object.<anonymous> (search/__tests__/search.integration.spec.ts:87:15)
+
+A worker process has failed to exit gracefully and has been force exited. This is likely caused by tests leaking due to improper teardown. Try running with --detectOpenHandles to find leaks. Active timers can also cause this, ensure that .unref() was called on them.
+Test Suites: 5 failed, 9 passed, 14 total
+Tests:       73 failed, 67 passed, 140 total
 Snapshots:   0 total
-Time:        13.604 s
+Time:        8.805 s, estimated 9 s
 Ran all test suites.
-[Nest] 30675  - 01/28/2026, 12:27:27 AM    WARN [PasswordService] Password too short
-[Nest] 30675  - 01/28/2026, 12:27:27 AM    WARN [PasswordService] Password missing required character classes
+npm error Lifecycle script `test` failed with error:
+npm error code 1
+npm error path /home/akenator/PROYECTOS/GRANTER 2.0/apps/backend-core
+npm error workspace @granter/backend-core@0.1.0
+npm error location /home/akenator/PROYECTOS/GRANTER 2.0/apps/backend-core
+npm error command failed
+npm error command sh -c jest

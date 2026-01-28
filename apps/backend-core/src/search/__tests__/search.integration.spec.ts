@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { SearchService } from '../search.service';
 import { GrantEntity } from '../../database/entities/grant.entity';
 import { SourceEntity } from '../../database/entities/source.entity';
@@ -25,8 +25,8 @@ describe('SearchService Integration Tests', () => {
   let app: INestApplication;
   let searchService: SearchService;
   let dataSource: DataSource;
-  let grantsRepository;
-  let sourcesRepository;
+  let grantsRepository: Repository<GrantEntity>;
+  let sourcesRepository: Repository<SourceEntity>;
 
   // Test data constants
   const TEST_SOURCES = {

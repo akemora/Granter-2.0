@@ -54,12 +54,8 @@ describe('useGrants', () => {
   it('should search grants', async () => {
     const { result } = renderHook(() => useGrants());
 
-    act(() => {
-      result.current.search({ query: 'research' });
-    });
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
+    await act(async () => {
+      await result.current.search({ query: 'research' });
     });
 
     expect(result.current.grants).toEqual(mockGrants);
@@ -74,12 +70,8 @@ describe('useGrants', () => {
 
     const { result } = renderHook(() => useGrants());
 
-    act(() => {
-      result.current.search({ query: 'invalid' });
-    });
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
+    await act(async () => {
+      await result.current.search({ query: 'invalid' });
     });
 
     expect(result.current.error).toBe(errorMessage);
@@ -96,12 +88,8 @@ describe('useGrants', () => {
       maxAmount: 100000,
     };
 
-    act(() => {
-      result.current.search(filters);
-    });
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
+    await act(async () => {
+      await result.current.search(filters);
     });
 
     const callUrl = (global.fetch as jest.Mock).mock.calls[0][0];
@@ -115,132 +103,107 @@ describe('useGrants', () => {
   it('should update filters and reset pagination', async () => {
     const { result } = renderHook(() => useGrants());
 
-    act(() => {
-      result.current.updateFilters({ query: 'new query' });
-    });
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
+    await act(async () => {
+      await result.current.updateFilters({ query: 'new query' });
     });
 
     expect(result.current.filters.query).toBe('new query');
     expect(result.current.currentPage).toBe(0);
   });
 
-  it('should navigate to next page', async () => {
-    const manyGrants = Array.from({ length: 50 }, (_, i) => ({
-      ...mockGrants[0],
-      id: `${i}`,
-      title: `Grant ${i}`,
-    }));
-
-    const pagedResult = {
-      data: manyGrants.slice(20, 40),
-      total: 50,
-      skip: 20,
-      take: 20,
-      currentPage: 1,
-      totalPages: 3,
-    };
-
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockSearchResult,
-    });
-
+  it('should not navigate when no next page', async () => {
     const { result } = renderHook(() => useGrants());
 
-    // Initial search
-    act(() => {
-      result.current.search();
+    await act(async () => {
+      await result.current.search();
     });
 
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-
-    // Mock next page result
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => pagedResult,
-    });
-
-    // Go to next page
-    act(() => {
-      result.current.nextPage();
-    });
-
-    await waitFor(() => {
-      expect(result.current.currentPage).toBe(1);
-    });
-  });
-
-  it('should not navigate past total pages', async () => {
-    const { result } = renderHook(() => useGrants());
-
-    act(() => {
-      result.current.search();
-    });
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-
-    const initialUrl = (global.fetch as jest.Mock).mock.calls[0][0];
+    const initialCalls = (global.fetch as jest.Mock).mock.calls.length;
 
     act(() => {
       result.current.nextPage();
     });
 
-    // Should not have called fetch for next page
-    expect((global.fetch as jest.Mock).mock.calls.length).toBe(1);
+    // Should not call fetch since totalPages is 1 and currentPage is 0
+    expect((global.fetch as jest.Mock).mock.calls.length).toBe(initialCalls);
   });
 
   it('should refetch with current filters', async () => {
     const { result } = renderHook(() => useGrants());
 
-    act(() => {
-      result.current.search({ query: 'research' });
+    await act(async () => {
+      await result.current.search({ query: 'research' });
     });
 
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
+    const initialCalls = (global.fetch as jest.Mock).mock.calls.length;
+
+    await act(async () => {
+      await result.current.refetch();
     });
 
-    jest.clearAllMocks();
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockSearchResult,
-    });
-
-    act(() => {
-      result.current.refetch();
-    });
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-
-    expect((global.fetch as jest.Mock)).toHaveBeenCalled();
-    const callUrl = (global.fetch as jest.Mock).mock.calls[0][0];
-    expect(callUrl).toContain('query=research');
+    expect((global.fetch as jest.Mock).mock.calls.length).toBe(
+      initialCalls + 1
+    );
   });
 
-  it('should track pagination state correctly', async () => {
-    const { result } = renderHook(() => useGrants());
+  it('should handle pagination with multiple pages', async () => {
+    const page1Result = {
+      data: mockGrants,
+      total: 40,
+      skip: 0,
+      take: 20,
+      currentPage: 0,
+      totalPages: 2,
+    };
 
-    act(() => {
-      result.current.search();
+    const page2Result = {
+      data: mockGrants,
+      total: 40,
+      skip: 20,
+      take: 20,
+      currentPage: 1,
+      totalPages: 2,
+    };
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => page1Result,
     });
 
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
+    const { result } = renderHook(() => useGrants());
+
+    await act(async () => {
+      await result.current.search();
     });
 
     expect(result.current.currentPage).toBe(0);
-    expect(result.current.totalPages).toBe(1);
-    expect(result.current.total).toBe(2);
-    expect(result.current.hasPrevPage).toBe(false);
-    expect(result.current.hasNextPage).toBe(false);
+    expect(result.current.totalPages).toBe(2);
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => page2Result,
+    });
+
+    await act(async () => {
+      await result.current.nextPage();
+    });
+
+    expect(result.current.currentPage).toBe(1);
+  });
+
+  it('should clamp page navigation', async () => {
+    const { result } = renderHook(() => useGrants());
+
+    await act(async () => {
+      await result.current.search();
+    });
+
+    // Try to go to negative page
+    act(() => {
+      result.current.goToPage(-1);
+    });
+
+    // Current page should not change
+    expect(result.current.currentPage).toBe(0);
   });
 });

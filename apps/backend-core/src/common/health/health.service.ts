@@ -38,7 +38,7 @@ export class HealthService {
     }
 
     // Determine overall status
-    const apiStatus = 'up'; // API is always up if this endpoint responds
+    const apiStatus: 'up' | 'down' = 'up'; // API is always up if this endpoint responds
     let overallStatus: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
 
     if (dbStatus === 'down') {
