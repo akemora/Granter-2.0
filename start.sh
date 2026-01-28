@@ -161,4 +161,48 @@ echo ""
 echo "🚀 Iniciando servidor de desarrollo..."
 echo ""
 
-npm run dev
+# Detectar el sistema operativo
+OS_TYPE=$(uname -s)
+
+# Iniciar npm dev en background
+npm run dev &
+DEV_PID=$!
+
+echo ""
+echo "⏳ Esperando a que la aplicación esté lista..."
+sleep 10
+
+echo ""
+echo "🌐 Abriendo navegador..."
+echo ""
+
+# Abrir el navegador según el SO
+if [ "$OS_TYPE" = "Darwin" ]; then
+    # macOS
+    open "http://localhost:3000"
+elif [ "$OS_TYPE" = "Linux" ]; then
+    # Linux
+    if command -v xdg-open &> /dev/null; then
+        xdg-open "http://localhost:3000"
+    elif command -v gnome-open &> /dev/null; then
+        gnome-open "http://localhost:3000"
+    else
+        echo "⚠️  Por favor, abre http://localhost:3000 en tu navegador"
+    fi
+elif [[ "$OS_TYPE" == MINGW* ]] || [[ "$OS_TYPE" == MSYS* ]]; then
+    # Windows
+    start "http://localhost:3000"
+else
+    echo "⚠️  Por favor, abre http://localhost:3000 en tu navegador"
+fi
+
+echo ""
+echo "✅ Aplicación iniciada correctamente"
+echo ""
+echo "Para detener la aplicación:"
+echo "   1. Presiona Ctrl+C en esta terminal"
+echo "   2. Ejecuta: docker compose down"
+echo ""
+
+# Mantener el script corriendo
+wait $DEV_PID
