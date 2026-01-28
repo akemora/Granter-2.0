@@ -1,0 +1,15 @@
+
+> @granter/web-frontend@0.1.0 test
+> jest
+
+PASS src/components/atoms/Button/Button.test.tsx
+PASS src/components/organisms/LoginForm/LoginForm.test.tsx
+PASS src/hooks/__tests__/useAuth.spec.ts
+PASS src/components/molecules/FormField/FormField.test.tsx
+PASS src/components/atoms/Input/Input.test.tsx
+
+Test Suites: 5 passed, 5 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        5.514 s
+Ran all test suites.

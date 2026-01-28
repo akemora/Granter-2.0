@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "granter-data-service"
+version = "0.1.0"
+requires-python = "^3.11"
+dependencies = [
+  "fastapi>=0.110.0",
+  "uvicorn[standard]>=0.23.0",
+  "pydantic>=2.2.0",
+  "pytest>=8.5.0",
+  "httpx>=0.25.0",
+  "loguru>=0.7.0"
+]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+python_files = "src/tests/*.py"
+addopts = "-ra"

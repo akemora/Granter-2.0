@@ -1,0 +1,25 @@
+
+> @granter/backend-core@0.1.0 test
+> jest
+
+PASS src/auth/__tests__/auth.service.spec.ts (7.031 s)
+PASS src/auth/__tests__/register.dto.spec.ts (9.295 s)
+PASS src/grants/__tests__/create-grant.dto.spec.ts (9.295 s)
+[Nest] 30680  - 01/28/2026, 12:27:25 AM   ERROR [XServiceTokenGuard] SERVICE_TOKEN is not configured
+PASS src/common/guards/__tests__/x-service-token.guard.spec.ts (10.096 s)
+[Nest] 30680  - 01/28/2026, 12:27:25 AM    WARN [XServiceTokenGuard] Invalid X-Service-Token provided
+[Nest] 30680  - 01/28/2026, 12:27:25 AM    WARN [XServiceTokenGuard] Missing X-Service-Token header
+[Nest] 30672  - 01/28/2026, 12:27:26 AM   ERROR [JwtStrategy] JWT secret is missing or too short (minimum 32 chars)
+[Nest] 30672  - 01/28/2026, 12:27:26 AM   ERROR [JwtStrategy] JWT secret is missing or too short (minimum 32 chars)
+PASS src/auth/__tests__/jwt.strategy.spec.ts (11.153 s)
+[Nest] 30672  - 01/28/2026, 12:27:26 AM    WARN [JwtStrategy] Invalid JWT payload: missing sub
+[Nest] 30672  - 01/28/2026, 12:27:26 AM    WARN [JwtStrategy] Invalid JWT payload types
+PASS src/auth/__tests__/password.service.spec.ts (11.643 s)
+
+Test Suites: 6 passed, 6 total
+Tests:       20 passed, 20 total
+Snapshots:   0 total
+Time:        13.604 s
+Ran all test suites.
+[Nest] 30675  - 01/28/2026, 12:27:27 AM    WARN [PasswordService] Password too short
+[Nest] 30675  - 01/28/2026, 12:27:27 AM    WARN [PasswordService] Password missing required character classes

@@ -1,0 +1,98 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: granter-postgres
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: granter
+      POSTGRES_USER: ${DB_USER:-granter}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-granter}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-granter}"]
+      interval: 10s
+      retries: 5
+    networks:
+      - granter-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: granter-redis
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      retries: 5
+    networks:
+      - granter-network
+
+  backend-core:
+    build:
+      context: ./apps/backend-core
+      dockerfile: Dockerfile
+    container_name: granter-backend
+    ports:
+      - '3001:3001'
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - granter-network
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3001/health']
+      interval: 10s
+      retries: 5
+
+    environment:
+      NODE_ENV: production
+  data-service:
+    build:
+      context: ./apps/data-service
+    container_name: granter-data-service
+    ports:
+      - '8000:8000'
+    env_file:
+      - .env
+    depends_on:
+      backend-core:
+        condition: service_started
+    networks:
+      - granter-network
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:8000/health']
+      interval: 10s
+      retries: 5
+
+    environment:
+      NODE_ENV: production
+
+  web-frontend:
+    build:
+      context: ./apps/web-frontend
+    container_name: granter-web
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    depends_on:
+      backend-core:
+        condition: service_healthy
+    networks:
+      - granter-network
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3000']
+      interval: 10s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  granter-network:
+    driver: bridge

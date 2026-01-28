@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [backend-core, web-frontend, data-service]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Run lint
+        run: npm run lint -w apps/${{ matrix.service }}
+
+  type-check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [backend-core, web-frontend, data-service]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Run type check
+        run: npm run type-check -w apps/${{ matrix.service }}
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [backend-core, web-frontend, data-service]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm run test -w apps/${{ matrix.service }}
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Backend coverage
+        run: npm run test:cov -w apps/backend-core
+      - name: Frontend coverage
+        run: npm run test:coverage -w apps/web-frontend
+      - name: Data-service coverage (pytest)
+        run: |
+          cd apps/data-service
+          pip install -r requirements.txt
+          pytest --cov=src

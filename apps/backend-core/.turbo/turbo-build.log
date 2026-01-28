@@ -1,0 +1,18 @@
+
+> @granter/backend-core@0.1.0 build
+> nest build
+
+[96msrc/grants/grants.service.ts[0m:[93m171[0m:[93m7[0m - [91merror[0m[90m TS2739: [0mType '{ id: string; }' is missing the following properties from type 'SourceEntity': name, url, region, active, createdAt
+
+[7m171[0m       updateData.source = { id: dto.sourceId };
+[7m   [0m [91m      ~~~~~~~~~~~~~~~~~[0m
+
+Found 1 error(s).
+
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path /home/akenator/PROYECTOS/GRANTER 2.0/apps/backend-core
+npm error workspace @granter/backend-core@0.1.0
+npm error location /home/akenator/PROYECTOS/GRANTER 2.0/apps/backend-core
+npm error command failed
+npm error command sh -c nest build
