@@ -1,540 +1,534 @@
-# 🤖 AGENTS.md - Production Deployment & Operations Guide
+# 🤖 AGENTS.md - Work Guidelines for Team & AI Agents
 
-**GRANTER v2 Production Ready** | Status: MVP Complete | Updated: 2026-01-28
-
----
-
-## 📌 CRITICAL: Production Status
-
-The GRANTER v2 MVP is **production-ready** and has completed all development sprints (0-4). This document covers the remaining steps for deployment and production operations.
-
-**Project Status:**
-- ✅ 84/84 tests passing (100%)
-- ✅ 85%+ code coverage
-- ✅ 96.2% security validation (102/106 items)
-- ✅ 12/12 release gates passing
-- ✅ Zero critical security vulnerabilities
+**GRANTER v2 Post-MVP Phase** | Status: Production Ready | Updated: 2026-01-28
 
 ---
 
-## 🚀 Deployment Steps
+## 📌 CRITICAL: Read This First
 
-### Phase 1: Pre-Deployment Verification
+This document tells you:
+1. **How to work on GRANTER v2 maintenance & improvements**
+2. **Which MCP/Model to use for each task type**
+3. **Non-negotiable rules you MUST follow**
+4. **How to report progress and blockers**
 
-**Checklist:**
+---
+
+## 🎯 Your Role
+
+### If You're an AI Agent:
+- Receive task/issue assignment
+- Identify task type (see classification below)
+- Check "MCP Assignment" for your task type
+- **Use that MCP. Don't deviate from it.**
+- Complete the work
+- Report status with metrics
+
+### If You're a Human Developer:
+- Same process, coordinate with AI agents
+- AI agents handle complex tasks, you focus on integration/testing
+- Always follow MCP assignments for consistency
+- Use this document as the source of truth for work guidelines
+
+---
+
+## 🏗️ MCP Assignment Rules (NON-NEGOTIABLE)
+
+### Rule 1: Security Code ALWAYS Uses Gemini
 ```
-[ ] All tests passing locally: npm run test
-[ ] All linting checks passed: npm run lint
-[ ] Type checking complete: npm run type-check
-[ ] Code coverage > 85%: npm run test:coverage
-[ ] Security scan passed: detect-secrets scan
-[ ] Docker images build successfully
-[ ] Environment variables documented in .env.example
-[ ] Database migrations ready
-[ ] Health check endpoints working
-```
+IF task involves:
+  - JWT implementation or changes
+  - Password hashing modifications
+  - Token validation updates
+  - Authentication guards
+  - Inter-service auth (X-Service-Token)
+  - Secrets or credentials handling
+  - Security vulnerability fixes
 
-**Command:**
-```bash
-./start.sh              # Full automated startup
-npm run test           # Verify all tests pass
-npm run type-check     # Verify no TypeScript errors
-docker compose up -d   # Start all services
-curl http://localhost:3001/health  # Verify backend health
-```
-
-### Phase 2: Environment Configuration
-
-**Required Environment Variables:**
-
-```env
-# Database
-DATABASE_URL=postgresql://[user]:[password]@[host]:[port]/[db]
-DB_USER=granter_prod
-DB_PASSWORD=[strong_password_32_chars_min]
-
-# Authentication
-JWT_SECRET=[strong_secret_32_chars_min]
-SERVICE_TOKEN=[strong_token_32_chars_min]
-
-# Node Environment
-NODE_ENV=production
-
-# API Keys (if using external services)
-GEMINI_API_KEY=[your_key]
-OPENAI_API_KEY=[your_key]
-
-# Frontend
-NEXT_PUBLIC_API_URL=https://[production_domain]/api
-
-# Ports
-BACKEND_PORT=3001
-FRONTEND_PORT=3000
+THEN: Use Gemini (gemini-2.0-flash)
+NO EXCEPTIONS.
 ```
 
-**Security:**
-- Store all secrets in a secrets manager (AWS Secrets Manager, HashiCorp Vault, etc.)
-- Never commit `.env` files to git
-- Rotate JWT_SECRET and SERVICE_TOKEN every 90 days
-- Use strong passwords (32+ characters, mixed case, numbers, symbols)
+### Rule 2: Boilerplate/Setup Uses Haiku
+```
+IF task is:
+  - Configuration file updates
+  - Simple bug fixes (one-liners)
+  - Documentation generation
+  - Dockerfile/docker-compose modifications
+  - Simple component changes (no logic)
+  - Environment setup
 
-### Phase 3: Database Setup
-
-**Prerequisites:**
-```bash
-# PostgreSQL 15+ required
-psql --version
-
-# Create database
-createdb granter_db
-createuser granter_user --password
+THEN: Use Claude Haiku
+REASON: 75% cheaper, sufficient for simple tasks
 ```
 
-**Apply Migrations:**
-```bash
-npm run migration:run    # Applies all pending migrations
-npm run migration:status # Verify migration status
-npm run db:health-check  # Verify database connection
+### Rule 3: Complex Logic Uses Sonnet
+```
+IF task requires:
+  - Business logic implementation
+  - Service layer modifications
+  - Bug investigation & fixes
+  - Performance optimization
+  - Database schema changes
+  - Complex refactoring
+
+THEN: Use Claude Sonnet
+REASON: Best cost-benefit for complex reasoning
 ```
 
-**Backup Strategy:**
-```bash
-# Daily backup
-pg_dump granter_db > granter_db_$(date +%Y%m%d).sql
-
-# Automated backup (cron job)
-# 0 2 * * * pg_dump granter_db > /backups/granter_db_$(date +\%Y\%m\%d).sql
+### Rule 4: Code Review/Audit Uses Gemini
 ```
+IF task is:
+  - Security audit of changes
+  - Code review (any PR)
+  - Architecture validation
+  - Test coverage analysis
+  - Performance profiling
+  - Vulnerability assessment
 
-### Phase 4: Docker Container Deployment
-
-**Build Production Images:**
-```bash
-# Build all images
-docker compose build
-
-# Or individual images
-docker build -f apps/backend-core/Dockerfile -t granter-backend .
-docker build -f apps/web-frontend/Dockerfile -t granter-frontend .
-```
-
-**Start Services:**
-```bash
-# Start all services
-docker compose up -d
-
-# Verify services
-docker compose ps
-docker compose logs -f backend-core
-```
-
-**Service Health Verification:**
-```bash
-# Check all endpoints
-curl http://localhost:3000           # Frontend
-curl http://localhost:3001/health    # Backend health
-curl http://localhost:8000/health    # Data service health
-```
-
-### Phase 5: SSL/TLS Configuration
-
-**Required for Production:**
-```bash
-# Generate self-signed certificate (or use Let's Encrypt)
-openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-
-# Update docker-compose with SSL ports
-# Add to backend-core service:
-#   - "443:443"
-```
-
-**Update CORS and Headers:**
-- Configure CORS to allow only production domain
-- Add security headers (HSTS, CSP, X-Frame-Options)
-- Enable HTTPS redirect
-
-### Phase 6: Monitoring & Alerts Setup
-
-**Key Metrics to Monitor:**
-```
-Backend:
-- API response time (target: < 100ms)
-- Error rate (target: < 0.1%)
-- CPU usage (target: < 70%)
-- Memory usage (target: < 80%)
-
-Database:
-- Connection count
-- Query execution time
-- Disk usage
-- Backup success/failure
-
-Frontend:
-- Page load time (target: < 2s)
-- Bundle size
-- Error rate
-- User session count
-```
-
-**Recommended Monitoring Tools:**
-- Prometheus + Grafana (metrics & dashboards)
-- ELK Stack (Elasticsearch, Logstash, Kibana) for logs
-- Sentry for error tracking
-- DataDog or New Relic for APM
-
-**Example Prometheus Scrape Config:**
-```yaml
-global:
-  scrape_interval: 15s
-
-scrape_configs:
-  - job_name: 'backend'
-    static_configs:
-      - targets: ['localhost:3001/metrics']
-
-  - job_name: 'postgres'
-    static_configs:
-      - targets: ['localhost:5432']
+THEN: Use Gemini
+REASON: Specialized in security & architecture analysis
 ```
 
 ---
 
-## 📊 Production Checklist
+## 📋 Task Classification & Workflow
 
-### Security Checklist
+### Task Types
+
+**TYPE A: Security/Auth Changes** → Gemini (5-10K tokens)
+- JWT modifications
+- Password/token handling
+- Permission/authorization logic
+- Security vulnerability fixes
+
+**TYPE B: Bug Fixes** → Sonnet (2-5K tokens)
+- Logic errors in services
+- Database query issues
+- API response formatting
+- Data transformation bugs
+
+**TYPE C: Simple Fixes** → Haiku (1-2K tokens)
+- One-line fixes
+- Config changes
+- Documentation updates
+- Simple UI tweaks
+
+**TYPE D: New Features** → Sonnet (5-10K tokens)
+- New API endpoints
+- New database entities
+- New service functionality
+- Complex UI components
+
+**TYPE E: Testing/Validation** → Sonnet (3-5K tokens)
+- Test writing
+- Test coverage improvement
+- Integration testing
+- E2E test scenarios
+
+**TYPE F: Performance/Optimization** → Sonnet (5-8K tokens)
+- Query optimization
+- Caching implementation
+- API performance tuning
+- Memory/CPU optimization
+
+---
+
+## 📊 MCP Decision Matrix (Quick Reference)
+
+| Task Type | MCP | Model | Use When | Budget |
+|-----------|-----|-------|----------|--------|
+| **Security Fix** | gemini | gemini-2.0-flash | Auth, JWT, tokens, secrets | 5-10K |
+| **Bug Fix (complex)** | claude | sonnet | Logic errors, hard-to-find bugs | 3-5K |
+| **Bug Fix (simple)** | claude | haiku | One-liner fixes, obvious issues | 1-2K |
+| **New Feature** | claude | sonnet | New APIs, entities, complex logic | 5-10K |
+| **Configuration** | claude | haiku | .env, docker-compose, simple updates | 1-2K |
+| **Testing** | claude | sonnet | Test writing, coverage improvement | 3-5K |
+| **Performance** | claude | sonnet | Optimization, caching, tuning | 5-8K |
+| **Code Review** | gemini | gemini-2.0-flash | Security review, architecture check | 2-5K |
+| **Documentation** | claude | haiku | Docs, README, guides | 1-2K |
+| **Refactoring** | claude | sonnet | Code cleanup, maintainability | 3-5K |
+
+---
+
+## 🔐 Critical Rules (MUST FOLLOW)
+
+### Rule 1: JWT Implementation
 ```
-[ ] JWT implements FAIL SECURE pattern (no fallbacks)
-[ ] All secrets in environment variables (not in code)
-[ ] X-Service-Token validation on all inter-service calls
-[ ] HTTPS/TLS enabled for all external connections
-[ ] CORS properly configured (no wildcard)
-[ ] Security headers configured (HSTS, CSP, X-Frame-Options)
-[ ] Database connections use SSL
-[ ] API rate limiting configured
-[ ] DDoS protection enabled (CloudFlare, AWS Shield, etc.)
-[ ] Web Application Firewall (WAF) deployed
+✅ DO:
+   - Implement JWT FAIL SECURE (no fallback)
+   - Validate token on EVERY request
+   - Return 401 Unauthorized on invalid token
+   - Store JWT secret in environment (never in code)
+   - Use RS256 asymmetric signing for inter-service
+
+❌ DON'T:
+   - Add fallback if JWT fails
+   - Skip validation on any endpoint
+   - Return 200 with error message
+   - Hardcode JWT secret
+   - Use HS256 for inter-service communication
 ```
 
-### Performance Checklist
+### Rule 2: Inter-Service Authentication
 ```
-[ ] Database indexes created and optimized
-[ ] Full-text search GIN indices configured
-[ ] API response time < 100ms (p99)
-[ ] Frontend bundle size < 500KB
-[ ] Database connection pooling configured
-[ ] Redis caching for frequently accessed data
-[ ] CDN configured for static assets
-[ ] Gzip compression enabled
-[ ] Image optimization in place
+✅ DO:
+   - Use X-Service-Token header for service-to-service calls
+   - Validate this header on ALL public endpoints
+   - Use different token for each service
+   - Rotate tokens every 90 days
+
+❌ DON'T:
+   - Allow calls without X-Service-Token
+   - Use same token for all services
+   - Store tokens in code
+   - Skip validation for "internal" endpoints
 ```
 
-### Operational Checklist
+### Rule 3: No Hardcoded Secrets
 ```
-[ ] Health check endpoints accessible
-[ ] Structured logging configured (JSON format)
-[ ] Log aggregation setup (ELK, Splunk, etc.)
-[ ] Backup automation running
-[ ] Disaster recovery plan documented
-[ ] Runbook for common issues created
-[ ] On-call escalation procedure established
-[ ] Incident response plan documented
-[ ] Change management process implemented
+✅ DO:
+   - Use environment variables for all secrets
+   - Run detect-secrets before every commit
+   - Store secrets in secure vault (AWS Secrets Manager, etc.)
+   - Rotate credentials regularly
+
+❌ DON'T:
+   - Commit .env files
+   - Hardcode API keys
+   - Put passwords in code comments
+   - Leave test credentials in code
 ```
 
-### Data Protection Checklist
+### Rule 4: Code Coverage Maintenance
 ```
-[ ] Database encryption at rest enabled
-[ ] Data encryption in transit (TLS)
-[ ] PII data handling procedures documented
-[ ] GDPR compliance verified (if applicable)
-[ ] Data retention policies implemented
-[ ] Audit logging for sensitive operations
-[ ] Regular security audits scheduled
-[ ] Penetration testing completed
+✅ DO:
+   - Maintain >70% coverage minimum
+   - Write tests for all new code
+   - Test happy path + error cases
+   - Use mocks for external services
+
+❌ DON'T:
+   - Merge code with <70% coverage
+   - Skip tests for "obvious" code
+   - Commit untested new functionality
+   - Test without proper mocks
+```
+
+### Rule 5: Security Review Before Merge
+```
+✅ DO:
+   - Have Gemini review ALL auth code BEFORE merge
+   - Have Gemini review ALL secret handling
+   - Run detect-secrets scan before commit
+   - Have Gemini review security-related changes
+
+❌ DON'T:
+   - Merge auth code without Gemini review
+   - Commit secrets to repo
+   - Skip detect-secrets scan
+   - Merge security changes without review
+```
+
+### Rule 6: File & Function Size Limits
+```
+✅ DO:
+   - Keep files under 400 lines
+   - Keep functions under 30 lines
+   - Keep indentation under 3 levels
+   - Split large components into smaller ones
+
+❌ DON'T:
+   - Create files > 400 lines
+   - Create functions > 30 lines
+   - Nest more than 3 levels
+   - Put multiple concerns in one file
+```
+
+### Rule 7: Token Budget Discipline
+```
+✅ DO:
+   - Track tokens used per task
+   - Report overages immediately
+   - Choose cheaper models when possible
+   - Stop and escalate at 95% budget
+
+❌ DON'T:
+   - Ignore token budget
+   - Continue past budget without escalating
+   - Use premium models for simple tasks
 ```
 
 ---
 
-## 🔄 Deployment Procedure
+## 📋 Standard Task Workflow
 
-### Step 1: Pre-Deployment Testing
-```bash
-# Full test suite
-npm run test
-
-# Coverage report
-npm run test:coverage
-
-# Security scan
-detect-secrets scan
+### Step 1: Receive Assignment
+```
+✅ Task assigned: "Fix JWT validation in grants service"
+✅ Identify type: Security/Auth Change → Gemini
+✅ Token budget: 5,000 tokens
+✅ Success criteria: All security tests pass, no coverage decrease
 ```
 
-### Step 2: Build & Tag Images
-```bash
-# Build with version tag
-docker build -f apps/backend-core/Dockerfile \
-  -t granter-backend:v2.0.0 .
-
-docker build -f apps/web-frontend/Dockerfile \
-  -t granter-frontend:v2.0.0 .
-
-# Push to registry
-docker tag granter-backend:v2.0.0 your-registry/granter-backend:v2.0.0
-docker push your-registry/granter-backend:v2.0.0
+### Step 2: Analyze Requirements
+```
+1. Read full task description
+2. Understand context:
+   - Which service is affected?
+   - What's the impact scope?
+   - Are there dependent services?
+3. Check related tests
+4. Identify critical rules that apply
 ```
 
-### Step 3: Deploy to Production
-```bash
-# Update docker-compose.yml with image tags
-# Then run:
-docker compose -f docker-compose.prod.yml pull
-docker compose -f docker-compose.prod.yml up -d
-
-# Verify deployment
-docker compose ps
-docker compose logs -f
+### Step 3: Execute Task
+```
+1. Create branch: git checkout -b task-description
+2. Implement changes following conventions
+3. Write/update tests (maintain >70% coverage)
+4. Run linting & type-check: npm run lint && npm run type-check
+5. Verify tests pass: npm run test
+6. Commit with clear message
+7. Open PR for review
 ```
 
-### Step 4: Post-Deployment Verification
-```bash
-# Health checks
-curl https://api.production.com/health
-curl https://api.production.com/swagger
+### Step 4: Report Status
 
-# Smoke tests
-npm run test:smoke
-
-# Monitor logs
-docker compose logs -f backend-core
+**When DONE:**
+```
+✅ Task "Fix JWT validation" COMPLETED
+   Type: Security (Gemini)
+   Tokens used: 4,200/5,000
+   Tests: All passing
+   Coverage: 85% (maintained)
+   Ready for review
 ```
 
-### Step 5: Communicate Status
-- Notify stakeholders of successful deployment
-- Update status page
-- Monitor error rates and performance metrics
-- Be ready to rollback if issues detected
-
----
-
-## 🔙 Rollback Procedure
-
-**If critical issues occur after deployment:**
-
-```bash
-# 1. Identify the issue
-docker compose logs backend-core | grep ERROR
-
-# 2. Stop current deployment
-docker compose down
-
-# 3. Restore previous image tag
-docker compose -f docker-compose.prod.yml up -d
-
-# 4. Verify rollback
-docker compose ps
-curl https://api.production.com/health
-
-# 5. Investigate root cause
-# Don't redeploy until root cause is identified
+**When BLOCKED:**
+```
+🔴 Task BLOCKED: "Database migration script"
+   Reason: PostgreSQL version mismatch
+   Escalating to: DevOps team
+   Need: Database environment upgrade
 ```
 
-**Rollback Time Target:** < 5 minutes
-
----
-
-## 📈 Scaling Strategy
-
-### Horizontal Scaling (Add More Containers)
-
-**Load Balancer Configuration:**
-```yaml
-# Backend: 3 containers minimum, scale to 10+
-# Frontend: 2 containers minimum, scale to 5+
-# Data Service: 1 container minimum, scale to 3+
-
-Recommended Setup:
-- nginx or HAProxy for load balancing
-- Round-robin distribution
-- Sticky sessions for frontend (optional)
+**When NEEDS CLARIFICATION:**
 ```
-
-**Database Scaling:**
-```
-Option 1: Read Replicas
-- Primary: write operations
-- Read Replicas (2-3): read operations
-
-Option 2: Connection Pooling
-- PgBouncer or pgpool-II
-- Connection limit: 100-200
-- Idle timeout: 10 minutes
-```
-
-### Vertical Scaling (Upgrade Server Resources)
-
-**Resource Targets (per service):**
-- Backend: 2 CPU cores, 4GB RAM minimum
-- Frontend: 1 CPU core, 2GB RAM minimum
-- Database: 4 CPU cores, 16GB RAM minimum
-
-**Auto-scaling Policies:**
-- CPU > 70% for 5 minutes → scale up
-- CPU < 30% for 15 minutes → scale down
-- Memory > 80% → alert immediately
-
----
-
-## 🔐 Security in Production
-
-### Regular Security Tasks
-
-**Daily:**
-- Monitor error logs for security anomalies
-- Check failed login attempts (> 10/hour = alert)
-- Verify all health checks passing
-
-**Weekly:**
-- Review access logs for suspicious patterns
-- Check database for unauthorized queries
-- Verify backup integrity
-
-**Monthly:**
-- Rotate JWT_SECRET and SERVICE_TOKEN
-- Review security logs
-- Update dependencies (security patches)
-- Run detect-secrets scan
-- Penetration test API endpoints
-
-**Quarterly:**
-- Full security audit
-- Dependency vulnerability scan
-- Test disaster recovery procedures
-- Review and update security policies
-
-### Incident Response
-
-**Critical Security Issue Protocol:**
-```
-1. ISOLATE: Take affected system offline
-2. ASSESS: Determine scope and impact
-3. NOTIFY: Alert security team and stakeholders
-4. CONTAIN: Prevent further damage
-5. INVESTIGATE: Root cause analysis
-6. REMEDIATE: Fix the issue
-7. TEST: Verify fix in staging
-8. DEPLOY: Deploy to production
-9. COMMUNICATE: Post-incident report
-10. PREVENT: Implement safeguards
-```
-
-**Response Time SLA:**
-- Critical: 30 minutes
-- High: 2 hours
-- Medium: 24 hours
-- Low: 1 week
-
----
-
-## 📝 Runbook: Common Issues & Solutions
-
-### Backend Container Not Starting
-
-```bash
-# Check logs
-docker compose logs backend-core
-
-# Common issues:
-# 1. Database not connected
-#    → Verify DATABASE_URL env var
-#    → Check PostgreSQL is running
-#    → Test connection: psql $DATABASE_URL
-
-# 2. Port already in use
-#    → Find process: lsof -i :3001
-#    → Kill it: kill -9 <PID>
-#    → Or change port in docker-compose.yml
-
-# 3. JWT_SECRET not set
-#    → Add to .env file: JWT_SECRET=[value]
-#    → Restart: docker compose restart backend-core
-```
-
-### High API Response Time
-
-```bash
-# Monitor response times
-docker compose exec backend-core curl http://localhost:3001/health
-
-# Check database performance
-docker compose exec postgres psql -U granter_dev \
-  -c "EXPLAIN ANALYZE SELECT * FROM grants;"
-
-# Scale up if needed
-docker compose up -d --scale backend-core=3
-```
-
-### Database Connection Issues
-
-```bash
-# Verify database running
-docker compose ps postgres
-
-# Check connections
-docker compose exec postgres psql -U granter_dev \
-  -c "SELECT count(*) FROM pg_stat_activity;"
-
-# If too many connections:
-# 1. Enable connection pooling (PgBouncer)
-# 2. Reduce max connections in pool
-# 3. Kill idle connections
-```
-
-### Disk Space Issues
-
-```bash
-# Check disk usage
-du -sh /var/lib/docker/volumes/
-
-# Clean up old images
-docker image prune -a
-
-# Remove old database backups
-rm /backups/granter_db_*.sql -t -r 30
-
-# Expand volume if needed
-# (Depends on cloud provider)
+⚠️ Task IN PROGRESS: "Add search filters"
+   Current: 60% complete
+   Question: Should filters be additive or exclusive?
+   Waiting on: Product team decision
 ```
 
 ---
 
-## 🆘 Support & Escalation
+## 🚨 Escalation Rules
 
-**For issues not in this runbook:**
+### When to Escalate
 
-1. Check application logs
-2. Review monitoring dashboards
-3. Consult architecture documentation
-4. Escalate to DevOps/Platform team
+```
+ESCALATE IF:
+1. Task blocked for > 30 minutes
+2. Token budget exceeded by > 20%
+3. Need to change MCP assignment
+4. Test coverage can't reach 70%
+5. Security concern detected
+6. Conflicting requirements
+7. Need clarification on acceptance criteria
+```
 
-**Escalation Contact:**
-- On-call: [phone/Slack channel]
-- Email: devops@company.com
-- Incident Channel: #incidents-granter
+### Escalation Triggers
+
+```
+🔴 AUTO-ESCALATE TO SONNET IF:
+   - Haiku fails 3 times on same task
+   - Token budget exceeded by 50%
+   - Critical bug in Haiku code
+   - Complex logic discovered mid-task
+
+🔴 AUTO-ESCALATE TO GEMINI IF:
+   - 3 MCPs fail on same task
+   - Security vulnerability suspected
+   - Code review detects security issues
+   - Authorization logic needed
+
+🔴 AUTO-ESCALATE TO HUMAN IF:
+   - No MCP can resolve
+   - Manual testing required
+   - Architecture decision needed
+   - Business logic clarification needed
+```
+
+---
+
+## 📈 Status Reporting
+
+### Daily Report Template
+
+```
+📊 GRANTER v2 Daily Status - [Date]
+
+Tasks Completed: [n]
+  ✅ Fix JWT validation in grants service
+  ✅ Update database indexes
+
+Tasks In Progress: [n]
+  🟡 Implement search filters (60% done)
+  🟡 Performance optimization (40% done)
+
+Blockers: [n]
+  🔴 Database migration (awaiting DevOps)
+
+Tokens Used: [X]/10,000 ([Y]%)
+  ├─ Haiku: [X] tokens ($0.XX)
+  ├─ Sonnet: [X] tokens ($0.XX)
+  └─ Gemini: [X] tokens ($0.XX)
+
+Issues for Next Day:
+  - [Issue 1]
+  - [Issue 2]
+```
+
+### Weekly Report Template
+
+```
+📊 GRANTER v2 Weekly Summary
+
+Week Of: [Date]
+Status: ON TRACK / BEHIND / AT RISK
+
+✅ Tasks Completed: [n]/[n] ([X]%)
+✅ Tokens Used: [X]/50,000 ([Y]%)
+✅ Code Coverage: [Z]%
+✅ Critical Blockers: [0/n]
+✅ Security Issues: [0/n]
+
+Top Accomplishments:
+  1. [Achievement]
+  2. [Achievement]
+  3. [Achievement]
+
+Next Week Priority:
+  1. [Priority 1]
+  2. [Priority 2]
+  3. [Priority 3]
+```
+
+---
+
+## ✅ Pre-Task Checklist
+
+Before starting ANY work, verify:
+
+```
+[ ] Task type identified (A-F from classification)
+[ ] MCP assignment confirmed
+[ ] Token budget understood
+[ ] Success criteria clear
+[ ] Related documentation reviewed
+[ ] No conflicting work in progress
+[ ] Ready to start? → GO! 🚀
+```
+
+---
+
+## 🔍 Code Quality Checklist
+
+Before marking any task DONE, verify:
+
+```
+✅ Code Quality:
+  [ ] Code passes linting: npm run lint
+  [ ] No unused imports/variables
+  [ ] Functions < 30 lines
+  [ ] Files < 400 lines
+  [ ] Max 3 levels of indentation
+  [ ] Clear naming conventions
+
+✅ Testing:
+  [ ] Unit tests written for new code
+  [ ] All tests passing: npm run test
+  [ ] Coverage >= 70%
+  [ ] No test skips (except @slow)
+
+✅ Security:
+  [ ] No hardcoded secrets
+  [ ] No SQL injection risks
+  [ ] Gemini review completed (if auth code)
+  [ ] No authentication bypasses
+
+✅ Performance:
+  [ ] No N+1 database queries
+  [ ] API responses < 100ms
+  [ ] No memory leaks
+
+✅ Compliance:
+  [ ] Follows CONVENTIONS.md
+  [ ] Follows CONVENTIONS_FRONTEND.md
+  [ ] Follows security rules
+  [ ] MCP assignment followed
+```
+
+---
+
+## 🚫 Red Lines (Automatic Rejection)
+
+These violations cause automatic rejection. NO EXCEPTIONS.
+
+```
+❌ AUTOMATIC REJECTION IF:
+   1. Test coverage < 70%
+   2. Security code without Gemini review
+   3. Secrets in code (detect-secrets failure)
+   4. No unit tests for new code
+   5. Auth code without FAIL SECURE pattern
+   6. X-Service-Token not implemented (if needed)
+   7. Any critical security rule violated
+   8. Linting/type-check fails
+
+→ PR automatically rejected
+→ Must fix before re-submission
+→ No exceptions to these rules
+```
 
 ---
 
 ## 📚 Reference Documents
 
-- **HOW_TO_RUN.md** - Local development setup
-- **API_REFERENCE.md** - API endpoints documentation
-- **ARCHITECTURE_OVERVIEW.md** - System design
-- **SPRINT_4_DEPLOYMENT_RUNBOOK.md** - Detailed deployment guide
-- **SPRINT_4_SECURITY_CHECKLIST.md** - Security validation checklist
+| Need | Document | Purpose |
+|------|----------|---------|
+| **How to run locally** | HOW_TO_RUN.md | Local development setup |
+| **API documentation** | API_REFERENCE.md | All endpoints & examples |
+| **System design** | ARCHITECTURE_OVERVIEW.md | System components & flow |
+| **Backend conventions** | CONVENTIONS.md | Code style & standards |
+| **Frontend conventions** | CONVENTIONS_FRONTEND.md | Frontend code style |
+| **Testing guide** | TESTING_GUIDE.md | Testing strategy |
+| **Security details** | PROPUESTA_SEGURIDAD_DESDE_0.md | Security implementation |
+| **Deployment steps** | SPRINT_4_DEPLOYMENT_RUNBOOK.md | Production deployment |
+| **Security checklist** | SPRINT_4_SECURITY_CHECKLIST.md | Security validation |
 
 ---
 
-**Status:** 🟢 PRODUCTION READY
-**Go-Live Date:** March 3, 2026
-**Support:** 24/7 On-Call Team
+## 📞 Support & Escalation
 
-🚀 **GRANTER v2 is ready for production!**
+**For questions not answered here:**
+
+1. Check the reference documents above
+2. Review recent commits for similar work
+3. Ask team lead for clarification
+4. Document the gap for improvement
+
+**Escalation Contact:**
+- Technical Lead: [contact]
+- DevOps Team: [contact]
+- Security Team: [contact]
+
+---
+
+**Status:** 🟢 PRODUCTION READY - MVP COMPLETE
+**Current Phase:** Post-MVP (Maintenance & Improvements)
+**Last Updated:** 2026-01-28
+
+🚀 **GRANTER v2 Guidelines - Follow These Rules!**
