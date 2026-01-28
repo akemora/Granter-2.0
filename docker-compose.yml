@@ -32,8 +32,8 @@ services:
 
   backend-core:
     build:
-      context: ./apps/backend-core
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/backend-core/Dockerfile
     container_name: granter-backend
     ports:
       - '3001:3001'
@@ -48,9 +48,6 @@ services:
       test: ['CMD-SHELL', 'curl -f http://localhost:3001/health']
       interval: 10s
       retries: 5
-
-    environment:
-      NODE_ENV: production
   data-service:
     build:
       context: ./apps/data-service
@@ -68,9 +65,6 @@ services:
       test: ['CMD-SHELL', 'curl -f http://localhost:8000/health']
       interval: 10s
       retries: 5
-
-    environment:
-      NODE_ENV: production
 
   web-frontend:
     build:

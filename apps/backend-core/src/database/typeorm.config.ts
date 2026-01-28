@@ -12,8 +12,8 @@ export const typeOrmConfigFactory = (
     url: configService.get<string>("databaseUrl"),
     synchronize: !isProduction,
     logging: !isProduction,
-    entities: [__dirname + `/../../**/*.entity.${extension}`],
-    migrations: [__dirname + `/../../migrations/*.${extension}`],
+    entities: [__dirname + `/entities/*.${extension}`],
+    migrations: [__dirname + `/migrations/*.${extension}`],
     autoLoadEntities: true,
   };
 };

@@ -51,7 +51,7 @@ describe('Scraper E2E Tests (S3-D2-1)', () => {
       // Mock the scraper service
       jest.spyOn(scraperService, 'scrapeWithFallback').mockResolvedValueOnce({
         success: true,
-        pages: [],
+        pages: [] as any[],
         method: 'generic',
         grantCount: 0,
       });
@@ -79,7 +79,7 @@ describe('Scraper E2E Tests (S3-D2-1)', () => {
                 amount: 50000,
               },
             ],
-            links: [],
+            links: [] as string[],
             depth: 0,
           },
         ],
@@ -136,7 +136,7 @@ describe('Scraper E2E Tests (S3-D2-1)', () => {
     it('should return error when all methods fail', async () => {
       const mockResult = {
         success: false,
-        pages: [],
+        pages: [] as any[],
         method: 'error' as const,
         error: 'All scraping methods failed',
         grantCount: 0,
@@ -160,7 +160,7 @@ describe('Scraper E2E Tests (S3-D2-1)', () => {
     it('should return correct response structure', async () => {
       const mockResult = {
         success: true,
-        pages: [],
+        pages: [] as any[],
         method: 'generic' as const,
         grantCount: 5,
       };
@@ -185,7 +185,7 @@ describe('Scraper E2E Tests (S3-D2-1)', () => {
     it('should include error message on failure', async () => {
       const mockResult = {
         success: false,
-        pages: [],
+        pages: [] as any[],
         method: 'error' as const,
         error: 'Connection timeout',
         grantCount: 0,

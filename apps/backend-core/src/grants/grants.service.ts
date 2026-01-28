@@ -168,7 +168,7 @@ export class GrantsService {
     }
 
     if (dto.sourceId !== undefined && dto.sourceId !== grant.source.id) {
-      updateData.source = { id: dto.sourceId };
+      updateData.source = { id: dto.sourceId } as any;
     }
 
     try {
