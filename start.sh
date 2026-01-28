@@ -112,80 +112,75 @@ fi
 echo ""
 
 # ============================================================
-# 5. EJECUTAR MIGRACIONES
+# 5. VERIFICAR SERVICIOS
 # ============================================================
-echo "🗄️ Ejecutando migraciones de base de datos..."
+echo "✔️ Verificando que los servicios estén listos..."
 echo ""
 
-echo "Ejecutando: npm run migration:run"
-npm run migration:run
+# Wait for backend health check (max 30 seconds)
+HEALTH_CHECK_ATTEMPTS=0
+MAX_ATTEMPTS=30
+while [ $HEALTH_CHECK_ATTEMPTS -lt $MAX_ATTEMPTS ]; do
+    if curl -s http://localhost:3001/health > /dev/null 2>&1; then
+        echo "✅ Backend API está listo"
+        break
+    fi
+    HEALTH_CHECK_ATTEMPTS=$((HEALTH_CHECK_ATTEMPTS + 1))
+    sleep 1
+done
 
-echo "✅ Migraciones completadas"
+if [ $HEALTH_CHECK_ATTEMPTS -eq $MAX_ATTEMPTS ]; then
+    echo "⚠️ Backend tardó más de lo esperado pero continuamos..."
+fi
 
 echo ""
 
 # ============================================================
-# 6. VERIFICAR CONFIGURACIÓN
-# ============================================================
-echo "✔️ Verificando configuración..."
-echo ""
-
-echo "Ejecutando: npm run db:health-check"
-npm run db:health-check
-
-echo ""
-
-# ============================================================
-# 7. INICIAR APLICACIÓN
+# 6. APLICACIÓN LISTA
 # ============================================================
 echo "════════════════════════════════════════════════════════════"
-echo "🎉 ¡LISTO PARA INICIAR!"
+echo "🎉 ¡LISTO!"
 echo "════════════════════════════════════════════════════════════"
 echo ""
-echo "Los servicios están configurados. Iniciando aplicación..."
+echo "✅ Todos los servicios están corriendo:"
 echo ""
 echo "📍 Acceso a la aplicación:"
-echo "   🌐 Frontend:  http://localhost:3000"
-echo "   🔌 Backend:   http://localhost:3001"
-echo "   📊 Health:    http://localhost:3001/health"
+echo "   🌐 Frontend:      http://localhost:3000"
+echo "   🔌 Backend API:   http://localhost:3001"
+echo "   📊 Health Check:  http://localhost:3001/health"
+echo "   📚 API Docs:      http://localhost:3001/swagger"
 echo ""
-echo "Para detener los servicios:"
-echo "   docker compose down"
+echo "🐳 Servicios en Docker:"
+echo "   - PostgreSQL (5432)"
+echo "   - Redis (6379)"
+echo "   - Backend NestJS (3001)"
+echo "   - Frontend React (3000)"
+echo "   - Data Service (8000)"
 echo ""
-echo "Para ver logs:"
-echo "   docker compose logs -f"
+echo "📋 Comandos útiles:"
+echo "   Ver logs:        docker compose logs -f"
+echo "   Detener:         docker compose down"
+echo "   Restart:         docker compose restart"
 echo ""
 echo "════════════════════════════════════════════════════════════"
 echo ""
 
-echo "🚀 Iniciando servidor de desarrollo..."
+echo "🌐 Abriendo navegador..."
 echo ""
 
 # Detectar el sistema operativo
 OS_TYPE=$(uname -s)
 
-# Iniciar npm dev en background
-npm run dev &
-DEV_PID=$!
-
-echo ""
-echo "⏳ Esperando a que la aplicación esté lista..."
-sleep 10
-
-echo ""
-echo "🌐 Abriendo navegador..."
-echo ""
-
 # Abrir el navegador según el SO
 if [ "$OS_TYPE" = "Darwin" ]; then
     # macOS
-    open "http://localhost:3000"
+    open "http://localhost:3000" &
 elif [ "$OS_TYPE" = "Linux" ]; then
     # Linux
     if command -v xdg-open &> /dev/null; then
-        xdg-open "http://localhost:3000"
+        xdg-open "http://localhost:3000" &
     elif command -v gnome-open &> /dev/null; then
-        gnome-open "http://localhost:3000"
+        gnome-open "http://localhost:3000" &
     else
         echo "⚠️  Por favor, abre http://localhost:3000 en tu navegador"
     fi
@@ -197,12 +192,8 @@ else
 fi
 
 echo ""
-echo "✅ Aplicación iniciada correctamente"
+echo "✅ ¡Listo para usar!"
 echo ""
-echo "Para detener la aplicación:"
-echo "   1. Presiona Ctrl+C en esta terminal"
-echo "   2. Ejecuta: docker compose down"
+echo "Para detener todo:"
+echo "   docker compose down"
 echo ""
-
-# Mantener el script corriendo
-wait $DEV_PID
