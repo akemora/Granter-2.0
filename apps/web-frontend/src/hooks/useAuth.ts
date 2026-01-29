@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { getCsrfToken } from '../lib/auth';
 
 export interface AuthUser {
   id: string;
@@ -11,76 +12,53 @@ type AuthResponse = {
   accessToken: string;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
-const TOKEN_KEY = 'granter_token';
+type RegisterResponse = {
+  message: string;
+};
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
 export function useAuth() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(() => {
-    if (typeof window === 'undefined') {
-      return null;
-    }
-    return localStorage.getItem(TOKEN_KEY);
-  });
 
-  const saveToken = (value: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(TOKEN_KEY, value);
+  const parseResponse = useCallback(async <T,>(response: Response): Promise<T> => {
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      const message = payload?.error?.message ?? payload?.message ?? 'Request failed';
+      throw new Error(message);
     }
-    setToken(value);
-  };
-
-  const clearToken = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(TOKEN_KEY);
+    if (payload && typeof payload === 'object' && 'data' in payload && 'success' in payload) {
+      return (payload as { data: T }).data;
     }
-    setToken(null);
-  };
+    return payload as T;
+  }, []);
 
   const fetchWithAuth = useCallback(
     async (url: string, options: RequestInit = {}) => {
-      const authToken = token;
-      if (!authToken) {
-        throw new Error('Missing auth token');
-      }
-
       const response = await fetch(`${API_BASE}${url}`, {
         ...options,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
           ...(options.headers ?? {}),
         },
+        credentials: 'include',
       });
 
-      if (!response.ok) {
-        const payload = await response.json().catch(() => ({}));
-        throw new Error(payload.message || 'Request failed');
-      }
-
-      return response.json();
+      return parseResponse<AuthUser>(response);
     },
-    [token],
+    [parseResponse],
   );
 
   const fetchCurrentUser = useCallback(async () => {
     try {
-      const body = await fetchWithAuth('/users/me');
+      const body = await fetchWithAuth('/auth/me');
       setUser(body);
-    } catch (err) {
+    } catch {
       setUser(null);
     }
   }, [fetchWithAuth]);
-
-  const persistUser = useCallback(
-    async (tokenValue: string) => {
-      saveToken(tokenValue);
-      await fetchCurrentUser();
-    },
-    [fetchCurrentUser],
-  );
 
   const login = useCallback(
     async (email: string, password: string) => {
@@ -91,15 +69,15 @@ export function useAuth() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
+          credentials: 'include',
         });
 
-        if (!response.ok) {
-          const payload = await response.json().catch(() => ({}));
-          throw new Error(payload.message || 'Login failed');
+        const body = await parseResponse<AuthUser | AuthResponse>(response);
+        if ('email' in body) {
+          setUser(body as AuthUser);
+        } else {
+          await fetchCurrentUser();
         }
-
-        const body = (await response.json()) as AuthResponse;
-        await persistUser(body.accessToken);
       } catch (err) {
         setError((err as Error).message);
         throw err;
@@ -107,7 +85,7 @@ export function useAuth() {
         setIsLoading(false);
       }
     },
-    [persistUser],
+    [fetchCurrentUser, parseResponse],
   );
 
   const register = useCallback(
@@ -119,15 +97,11 @@ export function useAuth() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
+          credentials: 'include',
         });
 
-        if (!response.ok) {
-          const payload = await response.json().catch(() => ({}));
-          throw new Error(payload.message || 'Registration failed');
-        }
-
-        const body = (await response.json()) as AuthResponse;
-        await persistUser(body.accessToken);
+        const body = await parseResponse<RegisterResponse>(response);
+        return body;
       } catch (err) {
         setError((err as Error).message);
         throw err;
@@ -135,22 +109,28 @@ export function useAuth() {
         setIsLoading(false);
       }
     },
-    [persistUser],
+    [fetchCurrentUser, parseResponse],
   );
 
-  const logout = useCallback(() => {
-    clearToken();
-    setUser(null);
+  const logout = useCallback(async () => {
+    try {
+      const csrfToken = getCsrfToken();
+      await fetch(`${API_BASE}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
+        },
+      });
+    } finally {
+      setUser(null);
+    }
   }, []);
 
   useEffect(() => {
-    if (!token) {
-      setUser(null);
-      return;
-    }
+    fetchCurrentUser().finally(() => setIsReady(true));
+  }, [fetchCurrentUser]);
 
-    fetchCurrentUser();
-  }, [token, fetchCurrentUser]);
-
-  return { user, login, register, logout, isLoading, error };
+  return { user, login, register, logout, isLoading, error, isReady };
 }

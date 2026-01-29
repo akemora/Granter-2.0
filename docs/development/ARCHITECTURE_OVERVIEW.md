@@ -1,6 +1,6 @@
 # 🏗️ GRANTER 2.0 - ARCHITECTURE OVERVIEW
 
-**Version:** 2.0.0 | **Date:** 2026-01-28 | **Status:** Production Ready
+**Version:** 2.0.0 | **Date:** 2026-01-29 | **Status:** Production Ready
 
 ---
 
@@ -33,16 +33,21 @@
 │ │ - < 100ms performance              │  │
 │ └────────────────────────────────────┘  │
 │ ┌────────────────────────────────────┐  │
-│ │ Scraper Service (2-Tier)           │  │
-│ │ - SmartScraper (multi-page)        │  │
-│ │ - GenericScraper (fallback)        │  │
-│ │ - 30s + 15s timeouts               │  │
+│ │ Scraper Service (Strategy)         │  │
+│ │ - HTML Handler (smart + generic)   │  │
+│ │ - API Handler (JSON/REST)          │  │
+│ │ - RSS Handler (feeds)              │  │
+│ │ - PDF Handler (document parsing)   │  │
 │ └────────────────────────────────────┘  │
 │ ┌────────────────────────────────────┐  │
-│ │ IA Extraction Service              │  │
-│ │ - Gemini API (primary)             │  │
-│ │ - Heuristic (fallback)             │  │
-│ │ - 10s timeout                      │  │
+│ │ IA Extraction (data-service)       │  │
+│ │ - /api/ia/extract                   │  │
+│ │ - Gemini API + heuristic           │  │
+│ └────────────────────────────────────┘  │
+│ ┌────────────────────────────────────┐  │
+│ │ Queue & Automation                 │  │
+│ │ - scraper-queue processor          │  │
+│ │ - async scraping jobs              │  │
 │ └────────────────────────────────────┘  │
 │ ┌────────────────────────────────────┐  │
 │ │ Health Checks                      │  │
@@ -65,29 +70,22 @@
 
 ## Key Architectural Decisions
 
-### 1. Scraper Architecture (2-Tier Fallback)
-**Problem:** Web scraping is unreliable
+### 1. Scraper Architecture (Strategy + Fallback)
+**Problem:** Sources vary (HTML, API, RSS) and HTML scraping is unreliable
 **Solution:**
-- Primary: SmartScraper (intelligent multi-page)
-  - Navigates 5 pages max
-  - Detects grants intelligently
-  - 30-second timeout
-- Fallback: GenericScraper (simple pattern matching)
-  - Parses single page
-  - Uses regex patterns
-  - 15-second timeout
-**Result:** Reliable grant extraction with graceful fallback
+- Strategy registry selects handler by SourceType
+- HTML Handler uses SmartScraper with GenericScraper fallback
+- API Handler maps JSON payloads to grants
+- RSS Handler maps feed items to grants
+ - PDF Handler extracts text from documents and builds grants
+**Result:** Extensible ingestion with HTML fallback retained
 
-### 2. IA Extraction (API → Heuristic)
-**Problem:** External API calls can fail
+### 2. IA Extraction (data-service)
+**Problem:** HTML parsing misses structured fields
 **Solution:**
-- Primary: Gemini API (natural language processing)
-  - Semantic understanding
-  - 10-second timeout
-- Fallback: Heuristic extraction (HTML analysis)
-  - Pattern matching
-  - Always available
-**Result:** Never fails - always returns data or error
+- data-service `/api/ia/extract` called when enabled in source metadata
+- Gemini API + heuristic extraction pipeline
+**Result:** Enriched grant fields with safe fallback
 
 ### 3. Search Performance (Indices)
 **Problem:** Large dataset, slow queries
@@ -101,7 +99,8 @@
 **Problem:** Broken authentication is critical
 **Solution:**
 - No fallback to defaults
-- Token expires in 7 days
+- Access token expires in 15 minutes
+- Refresh token expires in 7 days (rotation on refresh)
 - Password hashed with bcrypt 12 rounds
 - Comprehensive validation
 **Result:** Secure, fail-safe authentication
@@ -127,8 +126,8 @@
 2. Backend: Validate email/password strength
 3. Backend: Hash password (bcrypt 12 rounds)
 4. Database: Create user
-5. Backend: Generate JWT token
-6. Frontend: Store token, redirect to dashboard
+5. Backend: Return generic success message (no auth cookies)
+6. Frontend: Prompt user to sign in
 
 ### Grant Search
 1. Frontend: GET /search?query=research&regions=ES
@@ -139,13 +138,11 @@
 
 ### Web Scraping
 1. Frontend: POST /scraper/scrape (URL)
-2. Backend: Try SmartScraper
-   - Multi-page navigation
-   - Grant detection
-   - Link extraction
-3. If timeout/error: Try GenericScraper
-   - Single-page parsing
-   - Pattern matching
+2. Backend: Select handler by SourceType
+   - HTML Handler → SmartScraper → GenericScraper fallback
+   - API Handler → JSON mapping
+   - RSS Handler → feed parsing
+3. Optional: IA extraction via data-service (per-source toggle)
 4. Return results or error
 
 ---
@@ -165,12 +162,13 @@
 ## Security Features
 
 - **JWT FAIL SECURE:** No fallback, always validates
+- **Token Storage:** httpOnly cookies + CSRF token on state-changing requests
 - **Password:** Bcrypt 12 rounds minimum
 - **Input Validation:** Class-validator on all DTOs
 - **SQL Injection:** Parameterized queries via TypeORM
 - **CORS:** Restricted to known origins
 - **HTTPS:** TLS 1.2+ required
-- **Rate Limiting:** 100 req/15min per IP
+- **Rate Limiting:** 100 req/min per IP
 
 ---
 
@@ -191,4 +189,4 @@
 
 **Status:** ✅ Architecture Complete
 **Version:** 2.0.0 Production Ready
-**Last Updated:** 2026-01-28
+**Last Updated:** 2026-01-29

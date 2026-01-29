@@ -1,16 +1,14 @@
-import { IsEmail, IsString, Matches, MinLength } from "class-validator";
-
-const PASSWORD_PATTERN = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+import { IsEmail, IsString, Matches, MinLength } from 'class-validator';
+import { PASSWORD_MIN_LENGTH, PASSWORD_PATTERN, PASSWORD_PATTERN_MESSAGE } from '../auth.constants';
 
 export class AuthRegisterDto {
   @IsEmail()
   email!: string;
 
   @IsString()
-  @MinLength(12)
+  @MinLength(PASSWORD_MIN_LENGTH)
   @Matches(PASSWORD_PATTERN, {
-    message:
-      "Password must include uppercase, lowercase, and numeric characters",
+    message: PASSWORD_PATTERN_MESSAGE,
   })
   password!: string;
 }
