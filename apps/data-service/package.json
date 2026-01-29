@@ -1,0 +1,9 @@
+{
+  "name": "@granter/data-service",
+  "private": true,
+  "scripts": {
+    "lint": "python -m compileall src",
+    "type-check": "python -m compileall src",
+    "test": "pip install -r requirements.txt && pytest"
+  }
+}

@@ -35,12 +35,7 @@ export class SearchResultDto {
    */
   totalPages: number;
 
-  constructor(
-    data: GrantEntity[],
-    total: number,
-    skip: number,
-    take: number,
-  ) {
+  constructor(data: GrantEntity[], total: number, skip: number, take: number) {
     this.data = data;
     this.total = total;
     this.skip = skip;

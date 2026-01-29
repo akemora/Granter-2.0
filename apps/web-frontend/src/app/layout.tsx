@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import { AppShell } from '@/components/organisms/AppShell/AppShell';
 import '../styles/globals.css';
 
 export const metadata = {
@@ -5,13 +7,11 @@ export const metadata = {
   description: 'Government grants intelligence platform'
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body>
-        <div className="min-h-screen bg-[#0f172a] text-white">
-          <main className="mx-auto max-w-5xl px-6 py-16">{children}</main>
-        </div>
+    <html lang="es" suppressHydrationWarning>
+      <body suppressHydrationWarning className="bg-slate-950 text-slate-50">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GrantEntity } from '../database/entities/grant.entity';
+import { SourceEntity } from '../database/entities/source.entity';
 import { SearchController } from './search.controller';
 import { SearchService } from './search.service';
 
@@ -13,7 +14,7 @@ import { SearchService } from './search.service';
  * - Optimized query execution using database indices
  */
 @Module({
-  imports: [TypeOrmModule.forFeature([GrantEntity])],
+  imports: [TypeOrmModule.forFeature([GrantEntity, SourceEntity])],
   controllers: [SearchController],
   providers: [SearchService],
   exports: [SearchService],

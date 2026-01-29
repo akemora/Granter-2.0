@@ -8,9 +8,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles = {
-  primary: 'bg-primary-500 text-white shadow-md hover:bg-primary-600',
-  secondary: 'bg-neutral-900 text-white hover:bg-neutral-800',
-  ghost: 'bg-transparent border border-neutral-300 text-neutral-900'
+  primary: 'bg-white text-slate-950 hover:bg-blue-600 hover:text-white shadow-xl',
+  secondary: 'bg-slate-900 text-slate-200 hover:bg-slate-800 border border-slate-800',
+  ghost: 'bg-transparent border border-slate-700 text-slate-200 hover:bg-slate-900'
 };
 
 const sizeStyles = {
@@ -31,12 +31,12 @@ export function Button({
     <button
       type="button"
       disabled={disabled || isLoading}
-      className={`inline-flex items-center justify-center rounded-md transition-colors duration-base focus-visible:outline-none focus-visible:ring focus-visible:ring-primary-300 ${
+      className={`inline-flex items-center justify-center rounded-2xl transition-colors duration-base focus-visible:outline-none focus-visible:ring focus-visible:ring-blue-500/40 font-semibold ${
         variantStyles[variant]
       } ${sizeStyles[size]} ${disabled || isLoading ? 'opacity-60 cursor-not-allowed' : ''}`}
       {...props}
     >
-      {isLoading ? 'Loading…' : children}
+      {isLoading ? 'Cargando…' : children}
     </button>
   );
 }

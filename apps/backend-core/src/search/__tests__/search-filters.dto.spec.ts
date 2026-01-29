@@ -1,5 +1,6 @@
 import { validate } from 'class-validator';
 import { SearchFiltersDto } from '../dto/search-filters.dto';
+import { GrantStatus } from '../../common/enums/grant-status.enum';
 
 describe('SearchFiltersDto', () => {
   it('accepts empty filters (all optional)', async () => {
@@ -54,7 +55,7 @@ describe('SearchFiltersDto', () => {
 
   it('accepts status filter', async () => {
     const dto = new SearchFiltersDto();
-    dto.status = 'active';
+    dto.status = GrantStatus.OPEN;
     const errors = await validate(dto);
     expect(errors.length).toBe(0);
   });
@@ -67,7 +68,7 @@ describe('SearchFiltersDto', () => {
     dto.maxAmount = 50000;
     dto.deadlineAfter = '2024-06-01';
     dto.deadlineBefore = '2024-12-31';
-    dto.status = 'active';
+    dto.status = GrantStatus.OPEN;
     const errors = await validate(dto);
     expect(errors.length).toBe(0);
   });

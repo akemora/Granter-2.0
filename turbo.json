@@ -26,6 +26,12 @@
       "dependsOn": [
         "^test"
       ],
+      "inputs": [
+        "src/**",
+        "tests/**",
+        "pyproject.toml",
+        "requirements.txt"
+      ],
       "outputs": []
     },
     "type-check": {

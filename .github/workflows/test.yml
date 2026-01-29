@@ -43,6 +43,49 @@ jobs:
       - name: Run tests
         run: npm run test -w apps/${{ matrix.service }}
 
+  smoke:
+    runs-on: ubuntu-latest
+    needs: [test]
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: granter
+          POSTGRES_PASSWORD: granter
+          POSTGRES_DB: granter
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U granter -d granter"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://granter:granter@localhost:5432/granter
+      JWT_SECRET: ci-secret-ci-secret-ci-secret-ci-secret
+      SERVICE_TOKEN: service-token-service-token-service-token-32
+      FRONTEND_URL: http://localhost:3000
+      DATA_SERVICE_URL: http://localhost:8000
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Start backend
+        run: |
+          npm run start -w apps/backend-core &
+          for i in {1..30}; do
+            if curl -sf http://localhost:3001/health > /dev/null; then
+              echo "Backend is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Backend did not start in time"
+          exit 1
+      - name: Run smoke tests
+        run: npm run test:smoke
+
   coverage:
     runs-on: ubuntu-latest
     steps:
@@ -58,3 +101,16 @@ jobs:
           cd apps/data-service
           pip install -r requirements.txt
           pytest --cov=src
+
+  codeql:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript, python
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3

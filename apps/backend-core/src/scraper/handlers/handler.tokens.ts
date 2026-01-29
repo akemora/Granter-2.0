@@ -1,0 +1,1 @@
+export const SCRAPER_HANDLERS = 'SCRAPER_HANDLERS';

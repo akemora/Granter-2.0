@@ -4,6 +4,16 @@ import { useGrants } from '../useGrants';
 // Mock fetch
 global.fetch = jest.fn();
 
+const createResponse = (body: unknown) => ({
+  ok: true,
+  status: 200,
+  statusText: 'OK',
+  headers: {
+    get: (name: string) => (name === 'content-type' ? 'application/json' : null),
+  },
+  json: async () => body,
+});
+
 const mockGrants = [
   {
     id: '1',
@@ -30,17 +40,14 @@ const mockSearchResult = {
   total: 2,
   skip: 0,
   take: 20,
-  currentPage: 0,
+  currentPage: 1,
   totalPages: 1,
 };
 
 describe('useGrants', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (global.fetch as jest.Mock).mockResolvedValue({
-      ok: true,
-      json: async () => mockSearchResult,
-    });
+    (global.fetch as jest.Mock).mockResolvedValue(createResponse(mockSearchResult));
   });
 
   it('should initialize with empty grants', () => {
@@ -108,7 +115,7 @@ describe('useGrants', () => {
     });
 
     expect(result.current.filters.query).toBe('new query');
-    expect(result.current.currentPage).toBe(0);
+    expect(result.current.currentPage).toBe(1);
   });
 
   it('should not navigate when no next page', async () => {
@@ -152,7 +159,7 @@ describe('useGrants', () => {
       total: 40,
       skip: 0,
       take: 20,
-      currentPage: 0,
+      currentPage: 1,
       totalPages: 2,
     };
 
@@ -161,14 +168,11 @@ describe('useGrants', () => {
       total: 40,
       skip: 20,
       take: 20,
-      currentPage: 1,
+      currentPage: 2,
       totalPages: 2,
     };
 
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => page1Result,
-    });
+    (global.fetch as jest.Mock).mockResolvedValueOnce(createResponse(page1Result));
 
     const { result } = renderHook(() => useGrants());
 
@@ -176,19 +180,16 @@ describe('useGrants', () => {
       await result.current.search();
     });
 
-    expect(result.current.currentPage).toBe(0);
+    expect(result.current.currentPage).toBe(1);
     expect(result.current.totalPages).toBe(2);
 
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => page2Result,
-    });
+    (global.fetch as jest.Mock).mockResolvedValueOnce(createResponse(page2Result));
 
     await act(async () => {
       await result.current.nextPage();
     });
 
-    expect(result.current.currentPage).toBe(1);
+    expect(result.current.currentPage).toBe(2);
   });
 
   it('should clamp page navigation', async () => {
@@ -204,6 +205,6 @@ describe('useGrants', () => {
     });
 
     // Current page should not change
-    expect(result.current.currentPage).toBe(0);
+    expect(result.current.currentPage).toBe(1);
   });
 });

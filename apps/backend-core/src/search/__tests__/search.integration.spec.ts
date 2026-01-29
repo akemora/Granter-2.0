@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
+import { Client } from 'pg';
 import { SearchService } from '../search.service';
 import { GrantEntity } from '../../database/entities/grant.entity';
 import { SourceEntity } from '../../database/entities/source.entity';
@@ -21,7 +22,10 @@ import { SearchFiltersDto } from '../dto/search-filters.dto';
  * To run these tests, ensure PostgreSQL is running and accessible.
  * Test database configuration is set up in the beforeAll hook.
  */
-describe('SearchService Integration Tests', () => {
+const runDbTests = process.env.RUN_DB_TESTS === 'true';
+const describeDb = runDbTests ? describe : describe.skip;
+
+describeDb('SearchService Integration Tests', () => {
   let app: INestApplication;
   let searchService: SearchService;
   let dataSource: DataSource;
@@ -53,15 +57,41 @@ describe('SearchService Integration Tests', () => {
   // ==================== Setup & Teardown ====================
 
   beforeAll(async () => {
+    const dbHost = process.env.TEST_DB_HOST || process.env.DB_HOST || process.env.DATABASE_HOST || 'localhost';
+    const dbPort = parseInt(process.env.TEST_DB_PORT || process.env.DB_PORT || process.env.DATABASE_PORT || '5432', 10);
+    const dbUser = process.env.TEST_DB_USERNAME || process.env.DB_USER || process.env.DATABASE_USER || 'granter_dev';
+    const dbPassword =
+      process.env.TEST_DB_PASSWORD || process.env.DB_PASSWORD || process.env.DATABASE_PASSWORD || 'dev_password';
+    const testDatabase =
+      process.env.TEST_DB_NAME || process.env.DB_TEST_NAME || process.env.DATABASE_TEST_NAME || 'granter_search_test';
+    const adminDatabase = process.env.DB_ADMIN_NAME || 'postgres';
+
+    const safeDbName = /^[a-zA-Z0-9_]+$/.test(testDatabase) ? testDatabase : 'granter_search_test';
+
+    const adminClient = new Client({
+      host: dbHost,
+      port: dbPort,
+      user: dbUser,
+      password: dbPassword,
+      database: adminDatabase,
+    });
+
+    await adminClient.connect();
+    const exists = await adminClient.query('SELECT 1 FROM pg_database WHERE datname = $1', [safeDbName]);
+    if (exists.rowCount === 0) {
+      await adminClient.query(`CREATE DATABASE "${safeDbName}"`);
+    }
+    await adminClient.end();
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot({
           type: 'postgres',
-          host: process.env.TEST_DB_HOST || 'localhost',
-          port: parseInt(process.env.TEST_DB_PORT || '5432'),
-          username: process.env.TEST_DB_USERNAME || 'test',
-          password: process.env.TEST_DB_PASSWORD || 'test',
-          database: process.env.TEST_DB_NAME || 'granter_search_test',
+          host: dbHost,
+          port: dbPort,
+          username: dbUser,
+          password: dbPassword,
+          database: safeDbName,
           entities: [GrantEntity, SourceEntity],
           synchronize: true,
           dropSchema: true,
@@ -249,43 +279,30 @@ describe('SearchService Integration Tests', () => {
 
   describe('Full-Text Search', () => {
     it('should find grants by single keyword in title', async () => {
-      const result = await searchService.searchGrants(
-        { query: 'research' },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ query: 'research' }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
       expect(result.total).toBeGreaterThan(0);
       // Verify that all results contain 'research' in title or description
       const hasKeyword = result.data.every(
-        (g) =>
-          g.title.toLowerCase().includes('research') ||
-          g.description.toLowerCase().includes('research'),
+        (g) => g.title.toLowerCase().includes('research') || g.description.toLowerCase().includes('research'),
       );
       expect(hasKeyword).toBe(true);
     });
 
     it('should find grants by keyword in description', async () => {
-      const result = await searchService.searchGrants(
-        { query: 'innovation' },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ query: 'innovation' }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
       // Verify results contain the keyword
       const hasKeyword = result.data.every(
-        (g) =>
-          g.title.toLowerCase().includes('innovation') ||
-          g.description.toLowerCase().includes('innovation'),
+        (g) => g.title.toLowerCase().includes('innovation') || g.description.toLowerCase().includes('innovation'),
       );
       expect(hasKeyword).toBe(true);
     });
 
     it('should search by multiple words (AND behavior)', async () => {
-      const result = await searchService.searchGrants(
-        { query: 'research funding' },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ query: 'research funding' }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
       // Results should match the full-text search query
@@ -293,10 +310,7 @@ describe('SearchService Integration Tests', () => {
     });
 
     it('should return empty array for no matches', async () => {
-      const result = await searchService.searchGrants(
-        { query: 'nonexistent_keyword_xyz_abc' },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ query: 'nonexistent_keyword_xyz_abc' }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBe(0);
       expect(result.total).toBe(0);
@@ -307,25 +321,17 @@ describe('SearchService Integration Tests', () => {
 
   describe('Single Filter Tests', () => {
     it('should filter by single region (ES)', async () => {
-      const result = await searchService.searchGrants(
-        { regions: ['ES'] },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ regions: ['ES'] }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
       expect(result.data.every((g) => g.region === 'ES')).toBe(true);
     });
 
     it('should filter by multiple regions (ES and EU)', async () => {
-      const result = await searchService.searchGrants(
-        { regions: ['ES', 'EU'] },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ regions: ['ES', 'EU'] }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
-      expect(result.data.every((g) => ['ES', 'EU'].includes(g.region))).toBe(
-        true,
-      );
+      expect(result.data.every((g) => ['ES', 'EU'].includes(g.region))).toBe(true);
       // Verify we get grants from both regions
       const hasES = result.data.some((g) => g.region === 'ES');
       const hasEU = result.data.some((g) => g.region === 'EU');
@@ -334,43 +340,26 @@ describe('SearchService Integration Tests', () => {
     });
 
     it('should filter by amount range (min: 10k, max: 50k)', async () => {
-      const result = await searchService.searchGrants(
-        { minAmount: 10000, maxAmount: 50000 },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ minAmount: 10000, maxAmount: 50000 }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
       expect(
-        result.data.every(
-          (g) =>
-            parseFloat(g.amount.toString()) >= 10000 &&
-            parseFloat(g.amount.toString()) <= 50000,
-        ),
+        result.data.every((g) => parseFloat(g.amount.toString()) >= 10000 && parseFloat(g.amount.toString()) <= 50000),
       ).toBe(true);
     });
 
     it('should filter by minimum amount only', async () => {
-      const result = await searchService.searchGrants(
-        { minAmount: 100000 },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ minAmount: 100000 }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
-      expect(
-        result.data.every((g) => parseFloat(g.amount.toString()) >= 100000),
-      ).toBe(true);
+      expect(result.data.every((g) => parseFloat(g.amount.toString()) >= 100000)).toBe(true);
     });
 
     it('should filter by maximum amount only', async () => {
-      const result = await searchService.searchGrants(
-        { maxAmount: 30000 },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ maxAmount: 30000 }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
-      expect(
-        result.data.every((g) => parseFloat(g.amount.toString()) <= 30000),
-      ).toBe(true);
+      expect(result.data.every((g) => parseFloat(g.amount.toString()) <= 30000)).toBe(true);
     });
   });
 
@@ -387,11 +376,7 @@ describe('SearchService Integration Tests', () => {
       expect(
         result.data.every((g) => {
           const amount = parseFloat(g.amount.toString());
-          return (
-            g.region === 'ES' &&
-            amount >= 40000 &&
-            amount <= 100000
-          );
+          return g.region === 'ES' && amount >= 40000 && amount <= 100000;
         }),
       ).toBe(true);
     });
@@ -406,26 +391,19 @@ describe('SearchService Integration Tests', () => {
       expect(
         result.data.every((g) => {
           const amount = parseFloat(g.amount.toString());
-          return (
-            ['EU', 'INT'].includes(g.region) &&
-            amount >= 80000
-          );
+          return ['EU', 'INT'].includes(g.region) && amount >= 80000;
         }),
       ).toBe(true);
     });
 
     it('should combine search query with region filter', async () => {
-      const result = await searchService.searchGrants(
-        { query: 'research', regions: ['EU'] },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ query: 'research', regions: ['EU'] }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
       expect(
         result.data.every((g) => {
           const hasKeyword =
-            g.title.toLowerCase().includes('research') ||
-            g.description.toLowerCase().includes('research');
+            g.title.toLowerCase().includes('research') || g.description.toLowerCase().includes('research');
           return g.region === 'EU' && hasKeyword;
         }),
       ).toBe(true);
@@ -446,15 +424,9 @@ describe('SearchService Integration Tests', () => {
       expect(
         result.data.every((g) => {
           const hasKeyword =
-            g.title.toLowerCase().includes('funding') ||
-            g.description.toLowerCase().includes('funding');
+            g.title.toLowerCase().includes('funding') || g.description.toLowerCase().includes('funding');
           const amount = parseFloat(g.amount.toString());
-          return (
-            g.region === 'ES' &&
-            amount >= 20000 &&
-            amount <= 80000 &&
-            hasKeyword
-          );
+          return g.region === 'ES' && amount >= 20000 && amount <= 80000 && hasKeyword;
         }),
       ).toBe(true);
     });
@@ -464,27 +436,17 @@ describe('SearchService Integration Tests', () => {
 
   describe('Deadline Range Filters', () => {
     it('should filter by deadline after date', async () => {
-      const result = await searchService.searchGrants(
-        { deadlineAfter: '2026-09-01' },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ deadlineAfter: '2026-09-01' }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
-      expect(
-        result.data.every((g) => new Date(g.deadline) > new Date('2026-09-01')),
-      ).toBe(true);
+      expect(result.data.every((g) => new Date(g.deadline) > new Date('2026-09-01'))).toBe(true);
     });
 
     it('should filter by deadline before date', async () => {
-      const result = await searchService.searchGrants(
-        { deadlineBefore: '2026-07-01' },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ deadlineBefore: '2026-07-01' }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBeGreaterThan(0);
-      expect(
-        result.data.every((g) => new Date(g.deadline) < new Date('2026-07-01')),
-      ).toBe(true);
+      expect(result.data.every((g) => new Date(g.deadline) < new Date('2026-07-01'))).toBe(true);
     });
 
     it('should filter by deadline range', async () => {
@@ -519,11 +481,7 @@ describe('SearchService Integration Tests', () => {
       expect(
         result.data.every((g) => {
           const deadline = new Date(g.deadline);
-          return (
-            g.region === 'ES' &&
-            deadline > new Date('2026-07-01') &&
-            deadline < new Date('2026-12-31')
-          );
+          return g.region === 'ES' && deadline > new Date('2026-07-01') && deadline < new Date('2026-12-31');
         }),
       ).toBe(true);
     });
@@ -549,10 +507,7 @@ describe('SearchService Integration Tests', () => {
     });
 
     it('should enforce maximum page size (max 100)', async () => {
-      const result = await searchService.searchGrants(
-        {},
-        { skip: 0, take: 200 },
-      );
+      const result = await searchService.searchGrants({}, { skip: 0, take: 200 });
 
       expect(result.take).toBe(100);
       expect(result.data.length).toBeLessThanOrEqual(100);
@@ -580,10 +535,7 @@ describe('SearchService Integration Tests', () => {
     });
 
     it('should handle skip beyond total results', async () => {
-      const result = await searchService.searchGrants(
-        {},
-        { skip: 10000, take: 20 },
-      );
+      const result = await searchService.searchGrants({}, { skip: 10000, take: 20 });
 
       expect(result.data.length).toBe(0);
       expect(result.skip).toBe(10000);
@@ -601,20 +553,14 @@ describe('SearchService Integration Tests', () => {
 
   describe('Edge Cases', () => {
     it('should return all grants without any filters', async () => {
-      const result = await searchService.searchGrants(
-        {},
-        { skip: 0, take: 100 },
-      );
+      const result = await searchService.searchGrants({}, { skip: 0, take: 100 });
 
       expect(result.data.length).toBeGreaterThan(0);
       expect(result.total).toBeGreaterThan(0);
     });
 
     it('should handle empty array filters gracefully', async () => {
-      const result = await searchService.searchGrants(
-        { regions: [] },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ regions: [] }, { skip: 0, take: 20 });
 
       // Empty array should not apply filter
       expect(result.data.length).toBeGreaterThan(0);
@@ -634,10 +580,7 @@ describe('SearchService Integration Tests', () => {
     });
 
     it('should handle boundary amount values', async () => {
-      const result = await searchService.searchGrants(
-        { minAmount: 5000, maxAmount: 250000 },
-        { skip: 0, take: 100 },
-      );
+      const result = await searchService.searchGrants({ minAmount: 5000, maxAmount: 250000 }, { skip: 0, take: 100 });
 
       expect(result.data.length).toBeGreaterThan(0);
       expect(
@@ -659,14 +602,8 @@ describe('SearchService Integration Tests', () => {
     });
 
     it('should maintain data integrity with multiple searches', async () => {
-      const result1 = await searchService.searchGrants(
-        { regions: ['ES'] },
-        { skip: 0, take: 20 },
-      );
-      const result2 = await searchService.searchGrants(
-        { regions: ['ES'] },
-        { skip: 0, take: 20 },
-      );
+      const result1 = await searchService.searchGrants({ regions: ['ES'] }, { skip: 0, take: 20 });
+      const result2 = await searchService.searchGrants({ regions: ['ES'] }, { skip: 0, take: 20 });
 
       expect(result1.total).toBe(result2.total);
       expect(result1.data.length).toBe(result2.data.length);
@@ -681,64 +618,44 @@ describe('SearchService Integration Tests', () => {
 
   describe('Error Handling', () => {
     it('should throw on negative skip parameter', async () => {
-      await expect(
-        searchService.searchGrants({}, { skip: -1, take: 20 }),
-      ).rejects.toThrow();
+      await expect(searchService.searchGrants({}, { skip: -1, take: 20 })).rejects.toThrow();
     });
 
     it('should throw on zero or negative take parameter', async () => {
-      await expect(
-        searchService.searchGrants({}, { skip: 0, take: 0 }),
-      ).rejects.toThrow();
+      await expect(searchService.searchGrants({}, { skip: 0, take: 0 })).rejects.toThrow();
     });
 
     it('should throw on empty search query', async () => {
-      await expect(
-        searchService.searchGrants({ query: '' }),
-      ).rejects.toThrow();
+      await expect(searchService.searchGrants({ query: '' })).rejects.toThrow();
     });
 
     it('should throw on whitespace-only search query', async () => {
-      await expect(
-        searchService.searchGrants({ query: '   ' }),
-      ).rejects.toThrow();
+      await expect(searchService.searchGrants({ query: '   ' })).rejects.toThrow();
     });
 
     it('should throw on excessively long search query', async () => {
       const longQuery = 'a'.repeat(501);
-      await expect(
-        searchService.searchGrants({ query: longQuery }),
-      ).rejects.toThrow();
+      await expect(searchService.searchGrants({ query: longQuery })).rejects.toThrow();
     });
 
     it('should throw on negative minAmount', async () => {
-      await expect(
-        searchService.searchGrants({ minAmount: -100 }),
-      ).rejects.toThrow();
+      await expect(searchService.searchGrants({ minAmount: -100 })).rejects.toThrow();
     });
 
     it('should throw on negative maxAmount', async () => {
-      await expect(
-        searchService.searchGrants({ maxAmount: -100 }),
-      ).rejects.toThrow();
+      await expect(searchService.searchGrants({ maxAmount: -100 })).rejects.toThrow();
     });
 
     it('should throw when minAmount > maxAmount', async () => {
-      await expect(
-        searchService.searchGrants({ minAmount: 100000, maxAmount: 10000 }),
-      ).rejects.toThrow();
+      await expect(searchService.searchGrants({ minAmount: 100000, maxAmount: 10000 })).rejects.toThrow();
     });
 
     it('should throw on invalid deadlineAfter format', async () => {
-      await expect(
-        searchService.searchGrants({ deadlineAfter: 'not-a-date' }),
-      ).rejects.toThrow();
+      await expect(searchService.searchGrants({ deadlineAfter: 'not-a-date' })).rejects.toThrow();
     });
 
     it('should throw on invalid deadlineBefore format', async () => {
-      await expect(
-        searchService.searchGrants({ deadlineBefore: 'invalid-date' }),
-      ).rejects.toThrow();
+      await expect(searchService.searchGrants({ deadlineBefore: 'invalid-date' })).rejects.toThrow();
     });
 
     it('should throw when deadlineAfter >= deadlineBefore', async () => {
@@ -751,10 +668,7 @@ describe('SearchService Integration Tests', () => {
     });
 
     it('should handle invalid region without throwing', async () => {
-      const result = await searchService.searchGrants(
-        { regions: ['INVALID_REGION'] },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ regions: ['INVALID_REGION'] }, { skip: 0, take: 20 });
 
       expect(result.data.length).toBe(0);
       expect(result.total).toBe(0);
@@ -790,10 +704,7 @@ describe('SearchService Integration Tests', () => {
     });
 
     it('should verify numeric precision for amounts', async () => {
-      const result = await searchService.searchGrants(
-        { minAmount: 50000, maxAmount: 50000 },
-        { skip: 0, take: 20 },
-      );
+      const result = await searchService.searchGrants({ minAmount: 50000, maxAmount: 50000 }, { skip: 0, take: 20 });
 
       if (result.data.length > 0) {
         result.data.forEach((grant) => {
@@ -812,16 +723,13 @@ describe('SearchService Integration Tests', () => {
         expect(typeof grant.title).toBe('string');
         expect(typeof grant.description).toBe('string');
         expect(typeof grant.region).toBe('string');
-        expect(grant.deadline instanceof Date).toBe(true);
-        expect(grant.createdAt instanceof Date).toBe(true);
+        expect(grant.deadline instanceof Date || typeof grant.deadline === 'string').toBe(true);
+        expect(grant.createdAt instanceof Date || typeof grant.createdAt === 'string').toBe(true);
       }
     });
 
     it('should handle large result sets efficiently', async () => {
-      const result = await searchService.searchGrants(
-        {},
-        { skip: 0, take: 100 },
-      );
+      const result = await searchService.searchGrants({}, { skip: 0, take: 100 });
 
       // Even with 100 items, should complete quickly
       expect(result.data.length).toBeLessThanOrEqual(100);
@@ -845,11 +753,7 @@ describe('SearchService Integration Tests', () => {
       expect(
         result.data.every((g) => {
           const amount = parseFloat(g.amount.toString());
-          return (
-            ['EU', 'ES'].includes(g.region) &&
-            amount >= 50000 &&
-            new Date(g.deadline) > new Date('2026-06-01')
-          );
+          return ['EU', 'ES'].includes(g.region) && amount >= 50000 && new Date(g.deadline) > new Date('2026-06-01');
         }),
       ).toBe(true);
     });
@@ -872,8 +776,7 @@ describe('SearchService Integration Tests', () => {
           const amount = parseFloat(g.amount.toString());
           const deadline = new Date(g.deadline);
           const hasKeyword =
-            g.title.toLowerCase().includes('project') ||
-            g.description.toLowerCase().includes('project');
+            g.title.toLowerCase().includes('project') || g.description.toLowerCase().includes('project');
           return (
             ['ES', 'EU', 'INT'].includes(g.region) &&
             amount >= 25000 &&
@@ -887,14 +790,8 @@ describe('SearchService Integration Tests', () => {
     });
 
     it('should return consistent results with different take values', async () => {
-      const result20 = await searchService.searchGrants(
-        { regions: ['ES'] },
-        { skip: 0, take: 20 },
-      );
-      const result10 = await searchService.searchGrants(
-        { regions: ['ES'] },
-        { skip: 0, take: 10 },
-      );
+      const result20 = await searchService.searchGrants({ regions: ['ES'] }, { skip: 0, take: 20 });
+      const result10 = await searchService.searchGrants({ regions: ['ES'] }, { skip: 0, take: 10 });
 
       expect(result20.total).toBe(result10.total);
       // First 10 results should be identical

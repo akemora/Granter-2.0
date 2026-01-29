@@ -1,11 +1,6 @@
-import {
-  IsOptional,
-  IsString,
-  IsNumber,
-  IsArray,
-  IsDateString,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsOptional, IsString, IsNumber, IsArray, IsDateString, IsEnum } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { GrantStatus } from '../../common/enums/grant-status.enum';
 
 /**
  * Data Transfer Object for search filter parameters.
@@ -23,6 +18,7 @@ export class SearchFiltersDto {
    * Array of region codes to filter by (e.g., ES, EU, INT)
    */
   @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : value ? [value] : undefined))
   @IsArray()
   @IsString({ each: true })
   regions?: string[];
@@ -31,9 +27,19 @@ export class SearchFiltersDto {
    * Array of sectors to filter by
    */
   @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : value ? [value] : undefined))
   @IsArray()
   @IsString({ each: true })
   sectors?: string[];
+
+  /**
+   * Array of beneficiaries to filter by
+   */
+  @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : value ? [value] : undefined))
+  @IsArray()
+  @IsString({ each: true })
+  beneficiaries?: string[];
 
   /**
    * Minimum grant amount (inclusive)
@@ -66,9 +72,10 @@ export class SearchFiltersDto {
   deadlineBefore?: string;
 
   /**
-   * Filter by grant status (e.g., active, closed, pending)
+   * Filter by grant status (open, closed, upcoming, expired)
    */
   @IsOptional()
-  @IsString()
-  status?: string;
+  @Transform(({ value }) => (typeof value === 'string' ? value.toLowerCase() : value))
+  @IsEnum(GrantStatus)
+  status?: GrantStatus;
 }

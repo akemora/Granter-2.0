@@ -5,6 +5,8 @@ import { BadRequestException, Logger } from '@nestjs/common';
 import { SearchService } from '../search.service';
 import { GrantEntity } from '../../database/entities/grant.entity';
 import { SearchFiltersDto } from '../dto/search-filters.dto';
+import { SourceType } from '../../common/enums/source-type.enum';
+import { GrantStatus } from '../../common/enums/grant-status.enum';
 
 describe('SearchService', () => {
   let service: SearchService;
@@ -18,13 +20,21 @@ describe('SearchService', () => {
     amount: 50000,
     deadline: new Date('2024-12-31'),
     region: 'ES',
+    status: GrantStatus.OPEN,
+    sectors: ['research', 'innovation'],
+    beneficiaries: ['universities'],
+    sourceId: 'source-1',
     source: {
       id: 'source-1',
       name: 'Spanish Science Foundation',
       url: 'https://example.com',
       region: 'ES',
       active: true,
+      type: SourceType.HTML,
+      metadata: null,
+      lastRun: null,
       createdAt: new Date(),
+      updatedAt: new Date(),
     },
     createdAt: new Date('2024-01-01'),
   };
@@ -36,13 +46,21 @@ describe('SearchService', () => {
     amount: 100000,
     deadline: new Date('2024-06-30'),
     region: 'EU',
+    status: GrantStatus.CLOSED,
+    sectors: ['technology'],
+    beneficiaries: ['startups'],
+    sourceId: 'source-2',
     source: {
       id: 'source-2',
       name: 'EU Research Council',
       url: 'https://example.com',
       region: 'EU',
       active: true,
+      type: SourceType.HTML,
+      metadata: null,
+      lastRun: null,
       createdAt: new Date(),
+      updatedAt: new Date(),
     },
     createdAt: new Date('2024-01-15'),
   };
@@ -54,13 +72,21 @@ describe('SearchService', () => {
     amount: 25000,
     deadline: new Date('2024-11-30'),
     region: 'INT',
+    status: GrantStatus.UPCOMING,
+    sectors: ['education'],
+    beneficiaries: ['students'],
+    sourceId: 'source-3',
     source: {
       id: 'source-3',
       name: 'Global Education Trust',
       url: 'https://example.com',
       region: 'INT',
       active: true,
+      type: SourceType.HTML,
+      metadata: null,
+      lastRun: null,
       createdAt: new Date(),
+      updatedAt: new Date(),
     },
     createdAt: new Date('2024-02-01'),
   };
@@ -165,6 +191,75 @@ describe('SearchService', () => {
       expect(result.data).toHaveLength(2);
     });
 
+    it('should apply sector filter with multiple sectors', async () => {
+      const mockQuery = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getCount: jest.fn().mockResolvedValue(1),
+        orderBy: jest.fn().mockReturnThis(),
+        addOrderBy: jest.fn().mockReturnThis(),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([mockGrant1]),
+      };
+
+      mockRepository.createQueryBuilder.mockReturnValue(mockQuery as any);
+
+      const filters: SearchFiltersDto = { sectors: ['research', 'innovation'] };
+      await service.searchGrants(filters);
+
+      expect(mockQuery.andWhere).toHaveBeenCalledWith(
+        "string_to_array(grant.sectors, ',') && ARRAY[:...sectors]::text[]",
+        expect.objectContaining({ sectors: ['research', 'innovation'] }),
+      );
+    });
+
+    it('should apply beneficiary filter with multiple values', async () => {
+      const mockQuery = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getCount: jest.fn().mockResolvedValue(1),
+        orderBy: jest.fn().mockReturnThis(),
+        addOrderBy: jest.fn().mockReturnThis(),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([mockGrant1]),
+      };
+
+      mockRepository.createQueryBuilder.mockReturnValue(mockQuery as any);
+
+      const filters: SearchFiltersDto = { beneficiaries: ['universities', 'startups'] };
+      await service.searchGrants(filters);
+
+      expect(mockQuery.andWhere).toHaveBeenCalledWith(
+        "string_to_array(grant.beneficiaries, ',') && ARRAY[:...beneficiaries]::text[]",
+        expect.objectContaining({ beneficiaries: ['universities', 'startups'] }),
+      );
+    });
+
+    it('should apply status filter', async () => {
+      const mockQuery = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getCount: jest.fn().mockResolvedValue(1),
+        orderBy: jest.fn().mockReturnThis(),
+        addOrderBy: jest.fn().mockReturnThis(),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([mockGrant1]),
+      };
+
+      mockRepository.createQueryBuilder.mockReturnValue(mockQuery as any);
+
+      const filters: SearchFiltersDto = { status: GrantStatus.OPEN };
+      await service.searchGrants(filters);
+
+      expect(mockQuery.andWhere).toHaveBeenCalledWith(
+        'grant.status = :status',
+        expect.objectContaining({ status: GrantStatus.OPEN }),
+      );
+    });
+
     it('should apply amount range filters', async () => {
       const mockQuery = {
         leftJoinAndSelect: jest.fn().mockReturnThis(),
@@ -182,14 +277,8 @@ describe('SearchService', () => {
       const filters: SearchFiltersDto = { minAmount: 40000, maxAmount: 60000 };
       await service.searchGrants(filters);
 
-      expect(mockQuery.andWhere).toHaveBeenCalledWith(
-        'grant.amount >= :minAmount',
-        { minAmount: 40000 },
-      );
-      expect(mockQuery.andWhere).toHaveBeenCalledWith(
-        'grant.amount <= :maxAmount',
-        { maxAmount: 60000 },
-      );
+      expect(mockQuery.andWhere).toHaveBeenCalledWith('grant.amount >= :minAmount', { minAmount: 40000 });
+      expect(mockQuery.andWhere).toHaveBeenCalledWith('grant.amount <= :maxAmount', { maxAmount: 60000 });
     });
 
     it('should handle pagination with defaults', async () => {
@@ -295,14 +384,8 @@ describe('SearchService', () => {
 
       await service.searchGrants(filters);
 
-      expect(mockQuery.andWhere).toHaveBeenCalledWith(
-        'grant.deadline > :deadlineAfter',
-        expect.any(Object),
-      );
-      expect(mockQuery.andWhere).toHaveBeenCalledWith(
-        'grant.deadline < :deadlineBefore',
-        expect.any(Object),
-      );
+      expect(mockQuery.andWhere).toHaveBeenCalledWith('grant.deadline > :deadlineAfter', expect.any(Object));
+      expect(mockQuery.andWhere).toHaveBeenCalledWith('grant.deadline < :deadlineBefore', expect.any(Object));
     });
 
     it('should combine multiple filters', async () => {
@@ -333,64 +416,44 @@ describe('SearchService', () => {
     });
 
     it('should throw on negative skip parameter', async () => {
-      await expect(
-        service.searchGrants({}, { skip: -1, take: 20 }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.searchGrants({}, { skip: -1, take: 20 })).rejects.toThrow(BadRequestException);
     });
 
     it('should throw on zero or negative take parameter', async () => {
-      await expect(
-        service.searchGrants({}, { skip: 0, take: 0 }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.searchGrants({}, { skip: 0, take: 0 })).rejects.toThrow(BadRequestException);
     });
 
     it('should throw on empty search query', async () => {
-      await expect(
-        service.searchGrants({ query: '' }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.searchGrants({ query: '' })).rejects.toThrow(BadRequestException);
     });
 
     it('should throw on whitespace-only search query', async () => {
-      await expect(
-        service.searchGrants({ query: '   ' }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.searchGrants({ query: '   ' })).rejects.toThrow(BadRequestException);
     });
 
     it('should throw on excessively long search query', async () => {
       const longQuery = 'a'.repeat(501);
-      await expect(
-        service.searchGrants({ query: longQuery }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.searchGrants({ query: longQuery })).rejects.toThrow(BadRequestException);
     });
 
     it('should throw on negative minAmount', async () => {
-      await expect(
-        service.searchGrants({ minAmount: -100 }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.searchGrants({ minAmount: -100 })).rejects.toThrow(BadRequestException);
     });
 
     it('should throw on negative maxAmount', async () => {
-      await expect(
-        service.searchGrants({ maxAmount: -100 }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.searchGrants({ maxAmount: -100 })).rejects.toThrow(BadRequestException);
     });
 
     it('should throw when minAmount > maxAmount', async () => {
-      await expect(
-        service.searchGrants({ minAmount: 100000, maxAmount: 10000 }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.searchGrants({ minAmount: 100000, maxAmount: 10000 })).rejects.toThrow(BadRequestException);
     });
 
     it('should throw on invalid deadlineAfter format', async () => {
-      await expect(
-        service.searchGrants({ deadlineAfter: 'not-a-date' }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.searchGrants({ deadlineAfter: 'not-a-date' })).rejects.toThrow(BadRequestException);
     });
 
     it('should throw on invalid deadlineBefore format', async () => {
-      await expect(
-        service.searchGrants({ deadlineBefore: 'invalid-date' }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.searchGrants({ deadlineBefore: 'invalid-date' })).rejects.toThrow(BadRequestException);
     });
 
     it('should throw when deadlineAfter >= deadlineBefore', async () => {
@@ -406,16 +469,12 @@ describe('SearchService', () => {
       const mockQuery = {
         leftJoinAndSelect: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
-        getCount: jest
-          .fn()
-          .mockRejectedValue(new Error('Database connection error')),
+        getCount: jest.fn().mockRejectedValue(new Error('Database connection error')),
       };
 
       mockRepository.createQueryBuilder.mockReturnValue(mockQuery as any);
 
-      await expect(service.searchGrants({})).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.searchGrants({})).rejects.toThrow(BadRequestException);
     });
 
     it('should handle null filter values', async () => {

@@ -1,12 +1,8 @@
-import {
-  Controller,
-  Get,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { SearchFiltersDto } from './dto/search-filters.dto';
 import { SearchResultDto } from './dto/search-result.dto';
-import { PaginationDto } from '../common/dto/pagination.dto';
+import { SearchQueryDto } from './dto/search-query.dto';
 
 /**
  * Controller for search endpoints.
@@ -41,13 +37,8 @@ export class SearchController {
    * ```
    */
   @Get()
-  async search(
-    @Query() filters: SearchFiltersDto,
-    @Query() pagination: PaginationDto,
-  ): Promise<SearchResultDto> {
-    return this.searchService.searchGrants(filters, {
-      skip: pagination.skip ?? 0,
-      take: pagination.take ?? 20,
-    });
+  async search(@Query() query: SearchQueryDto): Promise<SearchResultDto> {
+    const { skip, take, ...filters } = query;
+    return this.searchService.searchGrants(filters as SearchFiltersDto, { skip, take });
   }
 }

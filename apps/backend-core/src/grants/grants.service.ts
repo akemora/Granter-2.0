@@ -1,20 +1,16 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-  ConflictException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { isUUID } from 'class-validator';
 import { GrantEntity } from '../database/entities/grant.entity';
 import { CreateGrantDto } from './dto/create-grant.dto';
 import { UpdateGrantDto } from './dto/update-grant.dto';
+import { GrantStatus } from '../common/enums/grant-status.enum';
 
 interface FindAllFilters {
   region?: string;
   sector?: string;
-  status?: string;
+  status?: GrantStatus;
 }
 
 interface PaginationParams {
@@ -33,19 +29,45 @@ export class GrantsService {
     private readonly grantsRepository: Repository<GrantEntity>,
   ) {}
 
+  private validateGrantId(id: string): void {
+    if (!id || typeof id !== 'string' || !isUUID(id)) {
+      throw new BadRequestException('Invalid grant ID');
+    }
+  }
+
+  private normalizeStringArray(values?: string[]): string[] | null {
+    if (!values) {
+      return null;
+    }
+    const normalized = values.map((value) => value.trim()).filter(Boolean);
+    return normalized.length > 0 ? normalized : null;
+  }
+
   async create(dto: CreateGrantDto): Promise<GrantEntity> {
     try {
       if (!dto.sourceId) {
         throw new BadRequestException('Source ID is required');
       }
 
+      const normalizedAmount = dto.amount !== undefined && dto.amount !== null ? Number(dto.amount) : null;
+      if (normalizedAmount !== null && normalizedAmount <= 0) {
+        throw new BadRequestException('Grant amount must be greater than 0');
+      }
+
+      const normalizedDeadline = dto.deadline ? new Date(dto.deadline) : null;
+
       const grant = this.grantsRepository.create({
         title: dto.title,
         description: dto.description,
-        amount: dto.amount,
-        deadline: new Date(dto.deadline),
+        amount: normalizedAmount,
+        deadline: normalizedDeadline,
         region: dto.region,
+        officialUrl: dto.officialUrl ?? null,
+        status: dto.status ?? GrantStatus.OPEN,
+        sectors: this.normalizeStringArray(dto.sectors),
+        beneficiaries: this.normalizeStringArray(dto.beneficiaries),
         source: { id: dto.sourceId },
+        sourceId: dto.sourceId,
       });
 
       const savedGrant = await this.grantsRepository.save(grant);
@@ -57,7 +79,7 @@ export class GrantsService {
         throw error;
       }
       if (error.code === '23503') {
-        throw new ConflictException('Referenced source does not exist');
+        throw new BadRequestException('Referenced source does not exist');
       }
       if (error.code === '23514') {
         throw new BadRequestException('Grant amount must be greater than 0');
@@ -67,9 +89,7 @@ export class GrantsService {
   }
 
   async findById(id: string): Promise<GrantEntity> {
-    if (!id || typeof id !== 'string') {
-      throw new BadRequestException('Invalid grant ID');
-    }
+    this.validateGrantId(id);
 
     const grant = await this.grantsRepository.findOne({
       where: { id },
@@ -84,17 +104,12 @@ export class GrantsService {
     return grant;
   }
 
-  async findAll(
-    filters?: FindAllFilters,
-    pagination?: PaginationParams,
-  ): Promise<GrantEntity[]> {
+  async findAll(filters?: FindAllFilters, pagination?: PaginationParams): Promise<GrantEntity[]> {
     const skip = pagination?.skip ?? 0;
     let take = pagination?.take ?? 10;
 
     if (take > MAX_ITEMS_PER_PAGE) {
-      this.logger.warn(
-        `Requested take: ${take} exceeds max ${MAX_ITEMS_PER_PAGE}, capping to max`,
-      );
+      this.logger.warn(`Requested take: ${take} exceeds max ${MAX_ITEMS_PER_PAGE}, capping to max`);
       take = MAX_ITEMS_PER_PAGE;
     }
 
@@ -118,27 +133,19 @@ export class GrantsService {
     }
 
     if (filters?.sector) {
-      queryBuilder.andWhere('source.sector = :sector', {
-        sector: filters.sector,
+      queryBuilder.andWhere("string_to_array(grant.sectors, ',') && ARRAY[:...sectors]::text[]", {
+        sectors: [filters.sector],
       });
     }
 
-    const grants = await queryBuilder
-      .skip(skip)
-      .take(take)
-      .orderBy('grant.created_at', 'DESC')
-      .getMany();
+    const grants = await queryBuilder.skip(skip).take(take).orderBy('grant.createdAt', 'DESC').getMany();
 
-    this.logger.log(
-      `Retrieved ${grants.length} grants with filters: ${JSON.stringify(filters)}`,
-    );
+    this.logger.log(`Retrieved ${grants.length} grants with filters: ${JSON.stringify(filters)}`);
     return grants;
   }
 
   async update(id: string, dto: UpdateGrantDto): Promise<GrantEntity> {
-    if (!id || typeof id !== 'string') {
-      throw new BadRequestException('Invalid grant ID');
-    }
+    this.validateGrantId(id);
 
     const grant = await this.findById(id);
 
@@ -160,15 +167,32 @@ export class GrantsService {
     }
 
     if (dto.deadline !== undefined) {
-      updateData.deadline = new Date(dto.deadline);
+      updateData.deadline = dto.deadline ? new Date(dto.deadline) : null;
     }
 
     if (dto.region !== undefined) {
       updateData.region = dto.region;
     }
 
-    if (dto.sourceId !== undefined && dto.sourceId !== grant.source.id) {
-      updateData.source = { id: dto.sourceId } as any;
+    if (dto.status !== undefined) {
+      updateData.status = dto.status;
+    }
+
+    if (dto.sectors !== undefined) {
+      updateData.sectors = this.normalizeStringArray(dto.sectors);
+    }
+
+    if (dto.beneficiaries !== undefined) {
+      updateData.beneficiaries = this.normalizeStringArray(dto.beneficiaries);
+    }
+
+    if (dto.officialUrl !== undefined) {
+      updateData.officialUrl = dto.officialUrl ?? null;
+    }
+
+    if (dto.sourceId !== undefined && dto.sourceId !== grant.source?.id) {
+      updateData.source = dto.sourceId ? ({ id: dto.sourceId } as GrantEntity['source']) : null;
+      updateData.sourceId = dto.sourceId ?? null;
     }
 
     try {
@@ -179,7 +203,7 @@ export class GrantsService {
     } catch (error) {
       this.logger.error(`Error updating grant ${id}: ${error.message}`, error.stack);
       if (error.code === '23503') {
-        throw new ConflictException('Referenced source does not exist');
+        throw new BadRequestException('Referenced source does not exist');
       }
       if (error.code === '23514') {
         throw new BadRequestException('Grant amount must be greater than 0');
@@ -189,11 +213,7 @@ export class GrantsService {
   }
 
   async delete(id: string): Promise<void> {
-    if (!id || typeof id !== 'string') {
-      throw new BadRequestException('Invalid grant ID');
-    }
-
-    const grant = await this.findById(id);
+    this.validateGrantId(id);
 
     try {
       const result = await this.grantsRepository.delete(id);

@@ -1,9 +1,8 @@
 'use client';
 
 import { useCallback, useState, useEffect } from 'react';
+import { fetchApi } from '../lib/api';
 import { Grant, SearchFilters, SearchResult, PaginationOptions } from '../types';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
 
 export interface UseGrantsOptions {
   initialFilters?: SearchFilters;
@@ -15,7 +14,7 @@ export function useGrants(options?: UseGrantsOptions) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
   const [filters, setFilters] = useState<SearchFilters>(
@@ -48,6 +47,11 @@ export function useGrants(options?: UseGrantsOptions) {
         if (appliedFilters.sectors?.length) {
           appliedFilters.sectors.forEach((s) => params.append('sectors', s));
         }
+        if (appliedFilters.beneficiaries?.length) {
+          appliedFilters.beneficiaries.forEach((b) =>
+            params.append('beneficiaries', b)
+          );
+        }
         if (appliedFilters.minAmount !== undefined) {
           params.append('minAmount', appliedFilters.minAmount.toString());
         }
@@ -64,16 +68,7 @@ export function useGrants(options?: UseGrantsOptions) {
           params.append('status', appliedFilters.status);
         }
 
-        const response = await fetch(`${API_BASE}/search?${params.toString()}`);
-
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(
-            data.message ?? `Search failed with status ${response.status}`
-          );
-        }
-
-        const result: SearchResult = await response.json();
+        const result = (await fetchApi(`/search?${params.toString()}`)) as SearchResult;
         setGrants(result.data);
         setTotal(result.total);
         setCurrentPage(result.currentPage);
@@ -96,6 +91,10 @@ export function useGrants(options?: UseGrantsOptions) {
     return search(filters, pagination);
   }, [search, filters, pagination]);
 
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
   const updateFilters = useCallback(
     (newFilters: SearchFilters) => {
       setFilters(newFilters);
@@ -107,10 +106,10 @@ export function useGrants(options?: UseGrantsOptions) {
 
   const goToPage = useCallback(
     (page: number) => {
-      if (page < 0 || page >= totalPages) return;
+      if (page < 1 || page > totalPages) return;
       const newPagination = {
         ...pagination,
-        skip: page * pagination.take,
+        skip: (page - 1) * pagination.take,
       };
       return search(filters, newPagination);
     },
@@ -130,7 +129,7 @@ export function useGrants(options?: UseGrantsOptions) {
     if (options?.initialFilters) {
       search(options.initialFilters, options.initialPagination);
     }
-  }, []);
+  }, [options?.initialFilters, options?.initialPagination, search]);
 
   return {
     // Data
@@ -150,11 +149,12 @@ export function useGrants(options?: UseGrantsOptions) {
     goToPage,
     nextPage,
     prevPage,
-    hasNextPage: currentPage < totalPages - 1,
-    hasPrevPage: currentPage > 0,
+    hasNextPage: currentPage < totalPages,
+    hasPrevPage: currentPage > 1,
 
     // Actions
     search,
     refetch,
+    clearError,
   };
 }

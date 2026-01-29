@@ -40,3 +40,26 @@ class ExtractionResponse(BaseModel):
     data: Optional[GrantData] = None
     method_used: ExtractionMethod
     error: Optional[str] = None
+
+
+class SourceType(str, Enum):
+    API = "API"
+    HTML = "HTML"
+    RSS = "RSS"
+    PDF = "PDF"
+
+
+class DiscoveredSource(BaseModel):
+    name: str
+    baseUrl: str
+    type: SourceType = SourceType.HTML
+    isActive: bool = False
+    metadata: dict[str, object] = Field(default_factory=dict)
+
+
+class DiscoveryResponse(BaseModel):
+    message: str
+    found: int
+    saved_as_inactive: int
+    auto_saved: bool
+    sources: list[DiscoveredSource]

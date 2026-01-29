@@ -19,10 +19,7 @@ export interface PaginationParams {
  * - take is capped to MAX_ITEMS_PER_PAGE (100) if it exceeds the limit
  * - take must be at least 1
  */
-export function calculatePagination(
-  skip?: number,
-  take?: number,
-): PaginationParams {
+export function calculatePagination(skip?: number, take?: number): PaginationParams {
   const safeSkip = skip !== undefined && skip >= 0 ? skip : DEFAULT_SKIP;
   const baseTake = take !== undefined && take >= 1 ? take : DEFAULT_TAKE;
   const safeTake = Math.min(baseTake, MAX_ITEMS_PER_PAGE);
@@ -39,10 +36,7 @@ export function calculatePagination(
  * @param take - Take parameter to validate
  * @throws Error if skip is negative or take is <= 0
  */
-export function validatePaginationParams(
-  skip?: number,
-  take?: number,
-): void {
+export function validatePaginationParams(skip?: number, take?: number): void {
   if (skip !== undefined && skip < 0) {
     throw new Error('Skip parameter cannot be negative');
   }

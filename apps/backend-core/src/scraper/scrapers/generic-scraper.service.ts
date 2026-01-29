@@ -18,6 +18,7 @@ import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 export interface GenericScrapedPage {
   url: string;
   title: string;
+  content: string;
   grants: GenericScrapedGrant[];
 }
 
@@ -46,7 +47,7 @@ export class GenericScraperService {
 
       this.logger.log(`✓ Generic scraping complete: ${grants.length} grants found`);
 
-      return { url, title, grants };
+      return { url, title, content: html, grants };
     } catch (error) {
       this.logger.error(`✗ Generic scraping failed: ${error.message}`);
       throw error;
@@ -60,8 +61,7 @@ export class GenericScraperService {
     try {
       const response = await fetch(url, {
         headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         },
         signal: controller.signal,
       });
@@ -126,16 +126,11 @@ export class GenericScraperService {
           // Try to extract amount
           const amountMatch = afterHeader.match(/[€$]\s*(\d{1,3}(?:[,\.]\d{3})*)/);
           if (amountMatch) {
-            grant.amount = parseInt(
-              amountMatch[1].replace(/[,\.]/g, ''),
-              10
-            );
+            grant.amount = parseInt(amountMatch[1].replace(/[,\.]/g, ''), 10);
           }
 
           // Try to extract deadline
-          const dateMatch = afterHeader.match(
-            /(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4})/
-          );
+          const dateMatch = afterHeader.match(/(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4})/);
           if (dateMatch) {
             grant.deadline = this.normalizeDate(dateMatch[1]);
           }

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GrantEntity } from '../database/entities/grant.entity';
@@ -14,7 +10,7 @@ import { SearchResultDto } from './dto/search-result.dto';
  *
  * Key Features:
  * - PostgreSQL full-text search (to_tsvector/plainto_tsquery)
- * - Advanced filtering by region, sector, amount range, deadline range, status
+ * - Advanced filtering by region, sector, beneficiaries, amount range, deadline range, status
  * - Query optimization using database indices
  * - Pagination with enforced limits
  * - Lazy loading of relationships to avoid N+1 queries
@@ -32,7 +28,7 @@ export class SearchService {
   /**
    * Search grants with optional filters and pagination.
    *
-   * @param filters - Optional search filters (query, regions, sectors, amount range, deadline range, status)
+   * @param filters - Optional search filters (query, regions, sectors, beneficiaries, amount range, deadline range, status)
    * @param pagination - Optional pagination parameters (skip, take)
    * @returns SearchResultDto with results and pagination metadata
    * @throws BadRequestException if search query is invalid
@@ -70,11 +66,10 @@ export class SearchService {
       const safeTake = Math.min(take, this.MAX_PAGE_SIZE);
 
       // Start building the query
-      let query = this.grantsRepository.createQueryBuilder('grant')
-        .leftJoinAndSelect('grant.source', 'source');
+      let query = this.grantsRepository.createQueryBuilder('grant').leftJoinAndSelect('grant.source', 'source');
 
       // Apply full-text search filter
-      if (filters.query) {
+      if (filters.query !== undefined) {
         this.validateSearchQuery(filters.query);
         query = query.andWhere(
           `to_tsvector('english', coalesce(grant.title, '') || ' ' || coalesce(grant.description, '')) @@ plainto_tsquery('english', :query)`,
@@ -91,17 +86,18 @@ export class SearchService {
         this.logger.debug(`Region filter applied: ${filters.regions.join(', ')}`);
       }
 
-      // Apply sector filter (via source relationship)
-      // Note: This filter is prepared for future sector column in source table
       if (filters.sectors && filters.sectors.length > 0) {
-        // Uncomment when source.sector column is added to database
-        // query = query.andWhere('source.sector IN (:...sectors)', {
-        //   sectors: filters.sectors,
-        // });
-        this.logger.debug(
-          `Sector filter requested but not yet available: ${filters.sectors.join(', ')}`,
-        );
-        // For now, just log and continue
+        query = query.andWhere("string_to_array(grant.sectors, ',') && ARRAY[:...sectors]::text[]", {
+          sectors: filters.sectors,
+        });
+        this.logger.debug(`Sector filter applied: ${filters.sectors.join(', ')}`);
+      }
+
+      if (filters.beneficiaries && filters.beneficiaries.length > 0) {
+        query = query.andWhere("string_to_array(grant.beneficiaries, ',') && ARRAY[:...beneficiaries]::text[]", {
+          beneficiaries: filters.beneficiaries,
+        });
+        this.logger.debug(`Beneficiary filter applied: ${filters.beneficiaries.join(', ')}`);
       }
 
       // Apply minimum amount filter
@@ -127,14 +123,8 @@ export class SearchService {
       }
 
       // Validate amount range
-      if (
-        filters.minAmount !== undefined &&
-        filters.maxAmount !== undefined &&
-        filters.minAmount > filters.maxAmount
-      ) {
-        throw new BadRequestException(
-          'Minimum amount cannot be greater than maximum amount',
-        );
+      if (filters.minAmount !== undefined && filters.maxAmount !== undefined && filters.minAmount > filters.maxAmount) {
+        throw new BadRequestException('Minimum amount cannot be greater than maximum amount');
       }
 
       // Apply deadline after filter
@@ -166,23 +156,15 @@ export class SearchService {
         const afterDate = new Date(filters.deadlineAfter);
         const beforeDate = new Date(filters.deadlineBefore);
         if (afterDate >= beforeDate) {
-          throw new BadRequestException(
-            'deadlineAfter must be before deadlineBefore',
-          );
+          throw new BadRequestException('deadlineAfter must be before deadlineBefore');
         }
       }
 
-      // Apply status filter
-      // Note: This filter is prepared for future status column in grant table
       if (filters.status) {
-        // Uncomment when grant.status column is added to database
-        // query = query.andWhere('grant.status = :status', {
-        //   status: filters.status,
-        // });
-        this.logger.debug(
-          `Status filter requested but not yet available: ${filters.status}`,
-        );
-        // For now, just log and continue
+        query = query.andWhere('grant.status = :status', {
+          status: filters.status,
+        });
+        this.logger.debug(`Status filter applied: ${filters.status}`);
       }
 
       // Get total count before pagination (for accurate pagination metadata)
@@ -207,10 +189,7 @@ export class SearchService {
         throw error;
       }
 
-      this.logger.error(
-        `Search failed: ${error.message}`,
-        error.stack,
-      );
+      this.logger.error(`Search failed: ${error.message}`, error.stack);
       throw new BadRequestException('Search query invalid or database error');
     }
   }

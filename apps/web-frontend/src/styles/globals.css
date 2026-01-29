@@ -4,11 +4,12 @@
 
 :root {
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
-  background: #f8fafc;
   min-height: 100vh;
+  background: #020617;
+  color: #f8fafc;
 }

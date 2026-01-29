@@ -1,54 +1,31 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { GrantsService } from './grants.service';
 import { CreateGrantDto } from './dto/create-grant.dto';
 import { UpdateGrantDto } from './dto/update-grant.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GrantEntity } from '../database/entities/grant.entity';
-import { PaginationDto } from '../common/dto/pagination.dto';
 import { PaginatedResponse } from '../common/dto/paginated-response.dto';
 import { calculatePagination } from '../common/utils/pagination.utils';
+import { GrantsQueryDto } from './dto/grants-query.dto';
 
 @Controller('grants')
 export class GrantsController {
   constructor(private readonly grantsService: GrantsService) {}
 
   @Get()
-  async findAll(
-    @Query() paginationDto: PaginationDto,
-    @Query('region') region?: string,
-    @Query('sector') sector?: string,
-    @Query('status') status?: string,
-  ): Promise<PaginatedResponse<GrantEntity>> {
+  async findAll(@Query() query: GrantsQueryDto): Promise<PaginatedResponse<GrantEntity>> {
+    const { region, sector, status } = query;
     const filters = {
       ...(region && { region }),
       ...(sector && { sector }),
       ...(status && { status }),
     };
 
-    const { skip, take } = calculatePagination(
-      paginationDto.skip,
-      paginationDto.take,
-    );
+    const { skip, take } = calculatePagination(query.skip, query.take);
 
     const data = await this.grantsService.findAll(filters, { skip, take });
 
-    return new PaginatedResponse(
-      data,
-      data.length,
-      skip,
-      take,
-    );
+    return new PaginatedResponse(data, data.length, skip, take);
   }
 
   @Get(':id')
@@ -65,10 +42,7 @@ export class GrantsController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
-  async update(
-    @Param('id') id: string,
-    @Body() updateGrantDto: UpdateGrantDto,
-  ): Promise<GrantEntity> {
+  async update(@Param('id') id: string, @Body() updateGrantDto: UpdateGrantDto): Promise<GrantEntity> {
     return this.grantsService.update(id, updateGrantDto);
   }
 

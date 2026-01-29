@@ -165,11 +165,11 @@
 - [x] Proper HTTP methods (GET/POST/PUT/DELETE)
 
 #### Rate Limiting
-- [ ] Rate limit: 100 requests/min per IP
+- [x] Rate limit: 100 requests/min per IP
 - [ ] Rate limit: 1000 requests/hour per user
-- [ ] Rate limit on login: 5 attempts/5min
+- [x] Rate limit on login: 5 attempts/5min
 - [ ] Rate limit header: X-RateLimit-*
-- [ ] 429 Too Many Requests on limit
+- [x] 429 Too Many Requests on limit
 
 #### Error Handling
 - [x] Generic error messages (no info leakage)
@@ -364,7 +364,7 @@
 
 ### Medium Priority
 ```
-⏳ Rate limiting (ready to enable)
+✅ Rate limiting enabled
 ⏳ Advanced monitoring
 ⏳ DDoS protection
 ⏳ WAF rules

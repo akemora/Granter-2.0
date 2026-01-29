@@ -1,12 +1,6 @@
-import { GrantRegion } from "./grant-region.enum";
-import {
-  IsEnum,
-  IsISO8601,
-  IsNumber,
-  IsString,
-  Min,
-  MinLength,
-} from "class-validator";
+import { GrantRegion } from './grant-region.enum';
+import { GrantStatus } from '../../common/enums/grant-status.enum';
+import { IsArray, IsEnum, IsISO8601, IsNumber, IsOptional, IsString, IsUrl, Min, MinLength } from 'class-validator';
 
 export class CreateGrantDto {
   @IsString()
@@ -23,8 +17,26 @@ export class CreateGrantDto {
   @IsISO8601()
   deadline!: string;
 
+  @IsOptional()
+  @IsUrl()
+  officialUrl?: string;
+
   @IsEnum(GrantRegion)
   region!: GrantRegion;
+
+  @IsOptional()
+  @IsEnum(GrantStatus)
+  status?: GrantStatus;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  sectors?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  beneficiaries?: string[];
 
   @IsString()
   sourceId!: string;

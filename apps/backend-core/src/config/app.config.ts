@@ -1,5 +1,5 @@
 export interface AppConfig {
-  env: "development" | "production" | "test";
+  env: 'development' | 'production' | 'test';
   port: number;
   databaseUrl?: string;
   jwtSecret?: string;
@@ -8,8 +8,7 @@ export interface AppConfig {
 }
 
 export default (): AppConfig => {
-  const resolvedEnv = (process.env.NODE_ENV ??
-    "development") as AppConfig["env"];
+  const resolvedEnv = (process.env.NODE_ENV ?? 'development') as AppConfig['env'];
 
   return {
     env: resolvedEnv,

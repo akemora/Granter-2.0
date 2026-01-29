@@ -1,6 +1,6 @@
 'use client';
 
-import { SearchFilters } from '@/types';
+import { GrantStatus, SearchFilters } from '@/types';
 
 interface FilterPanelProps {
   filters: SearchFilters;
@@ -9,6 +9,7 @@ interface FilterPanelProps {
 
 const REGIONS = ['ES', 'EU', 'INT'];
 const SECTORS = ['Technology', 'Energy', 'Health', 'Education', 'Environment'];
+const STATUSES: GrantStatus[] = ['open', 'closed', 'upcoming', 'expired'];
 
 export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
   const handleRegionToggle = (region: string) => {
@@ -36,6 +37,7 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
       query: undefined,
       regions: undefined,
       sectors: undefined,
+      beneficiaries: undefined,
       minAmount: undefined,
       maxAmount: undefined,
       deadlineAfter: undefined,
@@ -45,12 +47,12 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
   };
 
   return (
-    <div className="bg-white border border-neutral-200 rounded-lg p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-neutral-900 mb-6">Filters</h2>
+    <div className="bg-slate-900/50 border border-slate-800/60 rounded-3xl p-6 shadow-2xl">
+      <h2 className="text-lg font-semibold text-slate-100 mb-6">Filtros</h2>
 
       {/* Region Filter */}
-      <div className="mb-6 pb-6 border-b border-neutral-200">
-        <h3 className="text-sm font-medium text-neutral-900 mb-3">Region</h3>
+      <div className="mb-6 pb-6 border-b border-slate-800/60">
+        <h3 className="text-sm font-medium text-slate-100 mb-3">Región</h3>
         <div className="space-y-2">
           {REGIONS.map((region) => (
             <label key={region} className="flex items-center cursor-pointer">
@@ -58,17 +60,17 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
                 type="checkbox"
                 checked={filters.regions?.includes(region) || false}
                 onChange={() => handleRegionToggle(region)}
-                className="w-4 h-4 text-primary-600 border border-neutral-300 rounded focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                className="w-4 h-4 text-blue-500 border border-slate-700 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer bg-slate-900"
               />
-              <span className="ml-2 text-sm text-neutral-700">{region}</span>
+              <span className="ml-2 text-sm text-slate-300">{region}</span>
             </label>
           ))}
         </div>
       </div>
 
       {/* Sector Filter */}
-      <div className="mb-6 pb-6 border-b border-neutral-200">
-        <h3 className="text-sm font-medium text-neutral-900 mb-3">Sector</h3>
+      <div className="mb-6 pb-6 border-b border-slate-800/60">
+        <h3 className="text-sm font-medium text-slate-100 mb-3">Sector</h3>
         <div className="space-y-2">
           {SECTORS.map((sector) => (
             <label key={sector} className="flex items-center cursor-pointer">
@@ -76,21 +78,21 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
                 type="checkbox"
                 checked={filters.sectors?.includes(sector) || false}
                 onChange={() => handleSectorToggle(sector)}
-                className="w-4 h-4 text-primary-600 border border-neutral-300 rounded focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                className="w-4 h-4 text-blue-500 border border-slate-700 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer bg-slate-900"
               />
-              <span className="ml-2 text-sm text-neutral-700">{sector}</span>
+              <span className="ml-2 text-sm text-slate-300">{sector}</span>
             </label>
           ))}
         </div>
       </div>
 
       {/* Amount Range Filter */}
-      <div className="mb-6 pb-6 border-b border-neutral-200">
-        <h3 className="text-sm font-medium text-neutral-900 mb-3">Amount Range (EUR)</h3>
+      <div className="mb-6 pb-6 border-b border-slate-800/60">
+        <h3 className="text-sm font-medium text-slate-100 mb-3">Rango de importe (EUR)</h3>
         <div className="space-y-3">
           <div>
-            <label htmlFor="minAmount" className="block text-xs text-neutral-600 mb-1">
-              Minimum Amount
+            <label htmlFor="minAmount" className="block text-xs text-slate-500 mb-1">
+              Importe mínimo
             </label>
             <input
               id="minAmount"
@@ -100,12 +102,12 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
                 handleAmountChange('minAmount', e.target.value ? Number(e.target.value) : undefined)
               }
               placeholder="0"
-              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm bg-white text-neutral-900 placeholder-neutral-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none transition-colors"
+              className="w-full px-3 py-2 border border-slate-800 rounded-2xl text-sm bg-slate-900 text-slate-100 placeholder-slate-600 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all"
             />
           </div>
           <div>
-            <label htmlFor="maxAmount" className="block text-xs text-neutral-600 mb-1">
-              Maximum Amount
+            <label htmlFor="maxAmount" className="block text-xs text-slate-500 mb-1">
+              Importe máximo
             </label>
             <input
               id="maxAmount"
@@ -115,18 +117,66 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
                 handleAmountChange('maxAmount', e.target.value ? Number(e.target.value) : undefined)
               }
               placeholder="1000000"
-              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm bg-white text-neutral-900 placeholder-neutral-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none transition-colors"
+              className="w-full px-3 py-2 border border-slate-800 rounded-2xl text-sm bg-slate-900 text-slate-100 placeholder-slate-600 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all"
             />
           </div>
         </div>
       </div>
 
+      {/* Deadline Filter */}
+      <div className="mb-6 pb-6 border-b border-slate-800/60">
+        <h3 className="text-sm font-medium text-slate-100 mb-3">Fecha límite</h3>
+        <div className="space-y-3">
+          <div>
+            <label htmlFor="deadlineAfter" className="block text-xs text-slate-500 mb-1">
+              Desde
+            </label>
+            <input
+              id="deadlineAfter"
+              type="date"
+              value={filters.deadlineAfter || ''}
+              onChange={(e) => onFilterChange({ deadlineAfter: e.target.value || undefined })}
+              className="w-full px-3 py-2 border border-slate-800 rounded-2xl text-sm bg-slate-900 text-slate-100"
+            />
+          </div>
+          <div>
+            <label htmlFor="deadlineBefore" className="block text-xs text-slate-500 mb-1">
+              Hasta
+            </label>
+            <input
+              id="deadlineBefore"
+              type="date"
+              value={filters.deadlineBefore || ''}
+              onChange={(e) => onFilterChange({ deadlineBefore: e.target.value || undefined })}
+              className="w-full px-3 py-2 border border-slate-800 rounded-2xl text-sm bg-slate-900 text-slate-100"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Status Filter */}
+      <div className="mb-6 pb-6 border-b border-slate-800/60">
+        <h3 className="text-sm font-medium text-slate-100 mb-3">Estado</h3>
+        <select
+          value={filters.status || ''}
+          onChange={(e) => onFilterChange({ status: (e.target.value || undefined) as GrantStatus | undefined })}
+          className="w-full px-3 py-2 border border-slate-800 rounded-2xl text-sm bg-slate-900 text-slate-100"
+        >
+          <option value="">Todos</option>
+          {STATUSES.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* Clear Filters Button */}
       <button
         onClick={handleClearFilters}
-        className="w-full px-4 py-2 bg-neutral-100 text-neutral-700 rounded-lg text-sm font-medium hover:bg-neutral-200 transition-colors duration-base focus:outline-none focus:ring-2 focus:ring-primary-500"
+        className="w-full px-4 py-2 bg-slate-900 text-slate-300 rounded-2xl text-sm font-semibold hover:bg-slate-800 transition-colors duration-base focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
-        Clear Filters
+        Limpiar filtros
       </button>
     </div>
   );

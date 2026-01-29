@@ -1,9 +1,10 @@
 import request from "supertest";
-import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { INestApplication } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { Test, TestingModule } from "@nestjs/testing";
 import { AppModule } from "../src/app.module";
 import { UserEntity } from "../src/database/entities/user.entity";
+import { applyTestAppConfig } from "./utils/test-app";
 
 describe("Auth e2e", () => {
   let app: INestApplication;
@@ -22,14 +23,7 @@ describe("Auth e2e", () => {
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        transform: true,
-      }),
-    );
+    app = applyTestAppConfig(moduleFixture.createNestApplication());
 
     await app.init();
     dataSource = moduleFixture.get(DataSource);
@@ -44,9 +38,13 @@ describe("Auth e2e", () => {
     await app.close();
   });
 
-  it("registers a user and returns a token", async () => {
+  it("registers a user and sets auth cookies", async () => {
     const response = await httpServer.post("/auth/register").send(credentials).expect(201);
-    expect(response.body.accessToken).toBeDefined();
+    expect(response.body.data.email).toBe(credentials.email);
+    const cookies = response.headers["set-cookie"] ?? [];
+    expect(cookies.join(";")).toContain("access_token=");
+    expect(cookies.join(";")).toContain("refresh_token=");
+    expect(cookies.join(";")).toContain("csrf_token=");
   });
 
   it("rejects duplicate registration", async () => {
@@ -54,10 +52,12 @@ describe("Auth e2e", () => {
     await httpServer.post("/auth/register").send(credentials).expect(400);
   });
 
-  it("logs in with valid credentials", async () => {
+  it("logs in with valid credentials and sets cookies", async () => {
     await httpServer.post("/auth/register").send(credentials).expect(201);
     const login = await httpServer.post("/auth/login").send(credentials).expect(200);
-    expect(login.body.accessToken).toBeDefined();
+    expect(login.body.data.email).toBe(credentials.email);
+    const cookies = login.headers["set-cookie"] ?? [];
+    expect(cookies.join(";")).toContain("access_token=");
   });
 
   it("rejects invalid login attempts", async () => {
@@ -68,13 +68,10 @@ describe("Auth e2e", () => {
   });
 
   it("returns the authenticated user", async () => {
-    const register = await httpServer.post("/auth/register").send(credentials).expect(201);
-    const token = register.body.accessToken;
-    const me = await httpServer
-      .get("/auth/me")
-      .set("Authorization", `Bearer ${token}`)
-      .expect(200);
-    expect(me.body.email).toBe(credentials.email);
+    const agent = request.agent(app.getHttpServer());
+    await agent.post("/auth/register").send(credentials).expect(201);
+    const me = await agent.get("/auth/me").expect(200);
+    expect(me.body.data.email).toBe(credentials.email);
   });
 
   it("rejects missing JWT on protected route", async () => {

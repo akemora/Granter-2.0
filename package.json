@@ -11,6 +11,7 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test",
+    "test:smoke": "bash scripts/smoke-test.sh",
     "type-check": "turbo run type-check",
     "format": "turbo run format",
     "turbo": "turbo"

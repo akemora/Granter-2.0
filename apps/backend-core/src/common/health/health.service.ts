@@ -21,7 +21,18 @@ export class HealthService {
 
   constructor(private dataSource: DataSource) {}
 
-  async checkHealth() {
+  async checkHealth(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    timestamp: string;
+    uptime: number;
+    services: {
+      database: 'up' | 'down';
+      api: 'up' | 'down';
+    };
+    metrics: {
+      memoryUsage: number;
+    };
+  }> {
     const timestamp = new Date().toISOString();
     const uptime = Math.floor((Date.now() - this.startTime) / 1000); // seconds
 

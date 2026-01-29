@@ -80,7 +80,7 @@ export class SmartScraperService {
     depth: number,
     config: ScraperConfig,
     visited: Set<string>,
-    results: ScrapedPage[]
+    results: ScrapedPage[],
   ): Promise<void> {
     // Check termination conditions
     if (visited.has(url)) {
@@ -128,8 +128,7 @@ export class SmartScraperService {
 
       const response = await fetch(url, {
         headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         },
         signal: controller.signal,
       });
@@ -210,8 +209,7 @@ export class SmartScraperService {
     }
 
     // Extract deadlines (ISO 8601 or common formats)
-    const deadlinePattern =
-      /(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|\d{1,2}-\d{1,2}-\d{4})/g;
+    const deadlinePattern = /(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{4}|\d{1,2}-\d{1,2}-\d{4})/g;
     const deadlineMatch = deadlinePattern.exec(html);
     if (deadlineMatch) {
       grants.forEach((grant) => {
@@ -233,11 +231,7 @@ export class SmartScraperService {
       // Convert relative URLs to absolute
       const absoluteUrl = this.resolveUrl(baseUrl, href);
 
-      if (
-        absoluteUrl &&
-        this.isInternalLink(absoluteUrl, baseUrl) &&
-        !links.includes(absoluteUrl)
-      ) {
+      if (absoluteUrl && this.isInternalLink(absoluteUrl, baseUrl) && !links.includes(absoluteUrl)) {
         links.push(absoluteUrl);
       }
     }
@@ -277,11 +271,7 @@ export class SmartScraperService {
       const baseObj = new URL(baseUrl);
 
       // Only follow same domain
-      return (
-        urlObj.hostname === baseObj.hostname &&
-        !url.includes('.pdf') &&
-        !url.includes('logout')
-      );
+      return urlObj.hostname === baseObj.hostname && !url.includes('.pdf') && !url.includes('logout');
     } catch {
       return false;
     }

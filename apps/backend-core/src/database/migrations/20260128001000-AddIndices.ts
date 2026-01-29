@@ -1,8 +1,4 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  TableIndex,
-} from "typeorm";
+import { MigrationInterface, QueryRunner, TableIndex } from 'typeorm';
 
 export class AddIndices20260128001000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -11,10 +7,10 @@ export class AddIndices20260128001000 implements MigrationInterface {
     // Index on 'region' column - for filtering by region
     // Optimization: SELECT * FROM grants WHERE region = 'X'
     await queryRunner.createIndex(
-      "grants",
+      'grants',
       new TableIndex({
-        name: "IDX_grants_region",
-        columnNames: ["region"],
+        name: 'IDX_grants_region',
+        columnNames: ['region'],
         isUnique: false,
       }),
     );
@@ -33,10 +29,10 @@ export class AddIndices20260128001000 implements MigrationInterface {
     // Optimization: SELECT * FROM grants ORDER BY created_at DESC
     // Using DESC for descending order (typical for showing newest first)
     await queryRunner.createIndex(
-      "grants",
+      'grants',
       new TableIndex({
-        name: "IDX_grants_createdAt",
-        columnNames: ["created_at"],
+        name: 'IDX_grants_createdAt',
+        columnNames: ['created_at'],
         isUnique: false,
       }),
     );
@@ -74,10 +70,10 @@ export class AddIndices20260128001000 implements MigrationInterface {
     // Index on 'active' column - for filtering active sources
     // Optimization: SELECT * FROM sources WHERE active = true
     await queryRunner.createIndex(
-      "sources",
+      'sources',
       new TableIndex({
-        name: "IDX_sources_active",
-        columnNames: ["active"],
+        name: 'IDX_sources_active',
+        columnNames: ['active'],
         isUnique: false,
       }),
     );
@@ -85,10 +81,10 @@ export class AddIndices20260128001000 implements MigrationInterface {
     // Composite index on (region, active) - for filtering by region and active status
     // Optimization: SELECT * FROM sources WHERE region = 'X' AND active = true
     await queryRunner.createIndex(
-      "sources",
+      'sources',
       new TableIndex({
-        name: "IDX_sources_region_active",
-        columnNames: ["region", "active"],
+        name: 'IDX_sources_region_active',
+        columnNames: ['region', 'active'],
         isUnique: false,
       }),
     );
@@ -98,18 +94,18 @@ export class AddIndices20260128001000 implements MigrationInterface {
     // Drop all indices in reverse order
 
     // Drop sources table indices
-    await queryRunner.dropIndex("sources", "IDX_sources_region_active");
-    await queryRunner.dropIndex("sources", "IDX_sources_active");
+    await queryRunner.dropIndex('sources', 'IDX_sources_region_active');
+    await queryRunner.dropIndex('sources', 'IDX_sources_active');
 
     // Drop grants table indices
-    await queryRunner.dropIndex("grants", "IDX_grants_fulltext");
+    await queryRunner.dropIndex('grants', 'IDX_grants_fulltext');
     // Uncomment when status column is added:
     // await queryRunner.dropIndex("grants", "IDX_grants_status_createdAt");
-    await queryRunner.dropIndex("grants", "IDX_grants_createdAt");
+    await queryRunner.dropIndex('grants', 'IDX_grants_createdAt');
     // Uncomment when sector column is added:
     // await queryRunner.dropIndex("grants", "IDX_grants_sector");
     // Uncomment when status column is added:
     // await queryRunner.dropIndex("grants", "IDX_grants_status");
-    await queryRunner.dropIndex("grants", "IDX_grants_region");
+    await queryRunner.dropIndex('grants', 'IDX_grants_region');
   }
 }

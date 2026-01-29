@@ -1,36 +1,33 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Injectable,
-  Logger,
-} from "@nestjs/common";
-import { Request } from "express";
-import { timingSafeEqual } from "crypto";
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
+import { timingSafeEqual } from 'crypto';
 
 @Injectable()
 export class XServiceTokenGuard implements CanActivate {
   private readonly logger = new Logger(XServiceTokenGuard.name);
 
+  constructor(private readonly configService: ConfigService) {}
+
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
-    const header = request.header("x-service-token");
-    const token = process.env.SERVICE_TOKEN;
+    const header = request.header('x-service-token');
+    const token = this.configService.get<string>('serviceToken');
 
     if (!token) {
-      this.logger.error("SERVICE_TOKEN is not configured");
-      throw new ForbiddenException("Invalid service token");
+      this.logger.error('SERVICE_TOKEN is not configured');
+      throw new ForbiddenException('Invalid service token');
     }
 
     if (!header) {
-      this.logger.warn("Missing X-Service-Token header");
-      throw new ForbiddenException("Invalid service token");
+      this.logger.warn('Missing X-Service-Token header');
+      throw new ForbiddenException('Invalid service token');
     }
 
     const isValid = this.compareTokens(header, token);
     if (!isValid) {
-      this.logger.warn("Invalid X-Service-Token provided");
-      throw new ForbiddenException("Invalid service token");
+      this.logger.warn('Invalid X-Service-Token provided');
+      throw new ForbiddenException('Invalid service token');
     }
 
     return true;
@@ -38,8 +35,8 @@ export class XServiceTokenGuard implements CanActivate {
 
   private compareTokens(received: string, expected: string): boolean {
     try {
-      const receivedBuffer = Buffer.from(received, "utf8");
-      const expectedBuffer = Buffer.from(expected, "utf8");
+      const receivedBuffer = Buffer.from(received, 'utf8');
+      const expectedBuffer = Buffer.from(expected, 'utf8');
 
       if (receivedBuffer.length !== expectedBuffer.length) {
         return false;
@@ -47,7 +44,7 @@ export class XServiceTokenGuard implements CanActivate {
 
       return timingSafeEqual(receivedBuffer, expectedBuffer);
     } catch (error) {
-      this.logger.error("Token comparison failed", error as Error);
+      this.logger.error('Token comparison failed', error as Error);
       return false;
     }
   }

@@ -1,130 +1,78 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/atoms/Button/Button';
-
-/**
- * ScrapeButton Component
- *
- * Task: S3-D2-2 (Sprint 3, Day 2)
- * Complexity: LOW - Simple component
- * Assigned to: HAIKU (simple UI component)
- *
- * Features:
- * - Scrape button with loading state
- * - Error handling display
- * - Success notification
- * - Progress tracking
- */
+import { Play, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { fetchApi } from '@/lib/api';
 
 interface ScrapeButtonProps {
-  sourceUrl: string;
-  onScapeSuccess?: (grantCount: number) => void;
-  onScrapeError?: (error: string) => void;
-  className?: string;
+  onSuccess?: (count: number) => void;
 }
 
-export function ScrapeButton({
-  sourceUrl,
-  onScapeSuccess,
-  onScrapeError,
-  className = '',
-}: ScrapeButtonProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+export function ScrapeButton({ onSuccess }: ScrapeButtonProps) {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [count, setCount] = useState<number | null>(null);
 
   const handleScrape = async () => {
-    setIsLoading(true);
-    setError(null);
-    setSuccess(false);
-
+    setStatus('loading');
     try {
-      const response = await fetch('/api/scraper/scrape', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('granter_token')}`,
-        },
-        body: JSON.stringify({ url: sourceUrl }),
-      });
+      const data = await fetchApi('/scraper/run', { method: 'POST' });
+      const totalSaved = data?.totalSaved ?? 0;
+      setCount(totalSaved);
+      setStatus('success');
+      onSuccess?.(totalSaved);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Scraping failed');
-      }
-
-      const data = await response.json();
-
-      setSuccess(true);
-      onScapeSuccess?.(data.grantCount);
-
-      // Auto-dismiss success after 3 seconds
-      setTimeout(() => setSuccess(false), 3000);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Scraping failed';
-      setError(errorMessage);
-      onScrapeError?.(errorMessage);
-    } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setStatus('idle');
+        setCount(null);
+      }, 5000);
+    } catch (error) {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 5000);
     }
   };
 
   return (
-    <div className={className}>
-      <Button
+    <div className="flex flex-col items-end gap-2">
+      <button
         onClick={handleScrape}
-        disabled={isLoading || !sourceUrl}
-        className={`w-full transition-colors ${
-          isLoading ? 'opacity-75 cursor-wait' : ''
-        } ${success ? 'bg-green-600 hover:bg-green-700' : ''}`}
+        disabled={status === 'loading'}
+        className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl font-bold transition-all shadow-lg active:scale-95 disabled:opacity-50 ${
+          status === 'loading'
+            ? 'bg-slate-200 text-slate-500 cursor-wait shadow-none'
+            : status === 'success'
+            ? 'bg-green-600 text-slate-100 shadow-green-600/20'
+            : status === 'error'
+            ? 'bg-red-600 text-slate-100 shadow-red-600/20'
+            : 'bg-blue-700 text-slate-100 hover:bg-blue-800 shadow-blue-700/20'
+        }`}
       >
-        {isLoading ? (
+        {status === 'loading' ? (
           <>
-            <svg className="inline mr-2 w-4 h-4 animate-spin" viewBox="0 0 24 24">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-                fill="none"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            Scraping...
+            <Loader2 size={20} className="animate-spin" />
+            Escaneando Red...
           </>
-        ) : success ? (
+        ) : status === 'success' ? (
           <>
-            <svg className="inline mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Scraping Complete!
+            <CheckCircle size={20} />
+            ¡Listo!
+          </>
+        ) : status === 'error' ? (
+          <>
+            <AlertCircle size={20} />
+            Error de Conexión
           </>
         ) : (
           <>
-            <svg className="inline mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.3A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
-            </svg>
-            Start Scraping
+            <Play size={20} className="fill-current" />
+            Lanzar Scrapers
           </>
         )}
-      </Button>
+      </button>
 
-      {error && (
-        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-sm">
-          <p className="font-semibold">Error</p>
-          <p>{error}</p>
-        </div>
+      {status === 'success' && count !== null && (
+        <span className="text-[10px] font-black text-green-700 bg-green-100 px-3 py-1 rounded-full uppercase tracking-tighter animate-in fade-in slide-in-from-right-4 border border-green-200">
+          + {count} nuevas ayudas
+        </span>
       )}
     </div>
   );

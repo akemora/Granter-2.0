@@ -47,7 +47,7 @@ export function Pagination({
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="p-2 border border-neutral-200 rounded-lg text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors duration-base focus:outline-none focus:ring-2 focus:ring-primary-500"
+        className="p-2 border border-slate-800 rounded-2xl text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-900 transition-colors duration-base focus:outline-none focus:ring-2 focus:ring-blue-500"
         aria-label="Previous page"
       >
         <svg
@@ -65,7 +65,7 @@ export function Pagination({
         {pages.map((page, index) => {
           if (page === '...') {
             return (
-              <span key={`ellipsis-${index}`} className="px-3 py-2 text-neutral-600">
+              <span key={`ellipsis-${index}`} className="px-3 py-2 text-slate-500">
                 {page}
               </span>
             );
@@ -78,10 +78,10 @@ export function Pagination({
             <button
               key={pageNum}
               onClick={() => onPageChange(pageNum)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-base focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+              className={`px-3 py-2 rounded-2xl text-sm font-semibold transition-colors duration-base focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isActive
-                  ? 'bg-primary-600 text-white'
-                  : 'border border-neutral-200 text-neutral-700 hover:bg-neutral-50'
+                  ? 'bg-blue-600 text-white'
+                  : 'border border-slate-800 text-slate-300 hover:bg-slate-900'
               }`}
               aria-label={`Go to page ${pageNum}`}
               aria-current={isActive ? 'page' : undefined}
@@ -95,7 +95,7 @@ export function Pagination({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="p-2 border border-neutral-200 rounded-lg text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors duration-base focus:outline-none focus:ring-2 focus:ring-primary-500"
+        className="p-2 border border-slate-800 rounded-2xl text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-900 transition-colors duration-base focus:outline-none focus:ring-2 focus:ring-blue-500"
         aria-label="Next page"
       >
         <svg

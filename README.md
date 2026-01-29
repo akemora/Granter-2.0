@@ -63,19 +63,19 @@ Quick reference:
 - **[HOW_TO_RUN.md](./HOW_TO_RUN.md)** - Complete setup and running guide
 
 ### Developer Guides
-Located in `REBOOT/2.0 Reboot Post Dev Reports 280126/`:
+Located in `docs/development/`:
 
-- **DEVELOPMENT_GUIDE.md** - Development workflow & best practices
-- **API_REFERENCE.md** - All 13 API endpoints with examples
-- **ARCHITECTURE_OVERVIEW.md** - System design & components
-- **TESTING_GUIDE.md** - Testing strategy & procedures
-- **TROUBLESHOOTING_QUICK_FIX.md** - Solutions to common issues
+- **[DEVELOPMENT_GUIDE.md](./docs/development/DEVELOPMENT_GUIDE.md)** - Development workflow & best practices
+- **[API_REFERENCE.md](./docs/development/API_REFERENCE.md)** - API endpoints with examples
+- **[ARCHITECTURE_OVERVIEW.md](./docs/development/ARCHITECTURE_OVERVIEW.md)** - System design & components
+- **[TESTING_GUIDE.md](./docs/development/TESTING_GUIDE.md)** - Testing strategy & procedures
+- **[TROUBLESHOOTING_QUICK_FIX.md](./docs/development/TROUBLESHOOTING_QUICK_FIX.md)** - Solutions to common issues
 
 ### Project Documentation
-- **[SPRINT_4_FINAL_REPORT.md](./SPRINT_4_FINAL_REPORT.md)** - Final project status
-- **[SPRINT_4_DEPLOYMENT_RUNBOOK.md](./SPRINT_4_DEPLOYMENT_RUNBOOK.md)** - Production deployment
-- **[SPRINT_4_GO_LIVE_GUIDE.md](./SPRINT_4_GO_LIVE_GUIDE.md)** - Go-live procedures
-- **[SPRINT_4_SECURITY_CHECKLIST.md](./SPRINT_4_SECURITY_CHECKLIST.md)** - Security validation
+- **[SPRINT_4_FINAL_REPORT.md](./docs/sprints/round 1/SPRINT_4_FINAL_REPORT.md)** - Final project status
+- **[SPRINT_4_DEPLOYMENT_RUNBOOK.md](./docs/sprints/round 1/SPRINT_4_DEPLOYMENT_RUNBOOK.md)** - Production deployment
+- **[SPRINT_4_GO_LIVE_GUIDE.md](./docs/sprints/round 1/SPRINT_4_GO_LIVE_GUIDE.md)** - Go-live procedures
+- **[SPRINT_4_SECURITY_CHECKLIST.md](./docs/sprints/round 1/SPRINT_4_SECURITY_CHECKLIST.md)** - Security validation
 
 ---
 
@@ -88,9 +88,10 @@ GRANTER 2.0/
 │   ├── web-frontend/          # React SPA (port 3000)
 │   └── data-service/          # Python service
 ├── packages/                  # Shared code
-├── REBOOT/
-│   └── 2.0 Reboot Post Dev Reports 280126/
-│       └── Documentation
+├── docs/
+│   ├── development/           # Developer guides
+│   ├── sprints/               # Sprint reports & runbooks
+│   └── proposals/             # Proposals & audits
 ├── start.sh                   # ⭐ Automatic startup script
 ├── HOW_TO_RUN.md             # ⭐ Complete setup guide
 └── README.md                 # This file
@@ -166,9 +167,9 @@ Once running:
 ## 🆘 HELP & SUPPORT
 
 1. **Quick Start Issues?** → See [HOW_TO_RUN.md](./HOW_TO_RUN.md) - Troubleshooting section
-2. **Development Questions?** → See [DEVELOPMENT_GUIDE.md](./REBOOT/2.0%20Reboot%20Post%20Dev%20Reports%20280126/DEVELOPMENT_GUIDE.md)
-3. **API Documentation?** → See [API_REFERENCE.md](./REBOOT/2.0%20Reboot%20Post%20Dev%20Reports%20280126/API_REFERENCE.md)
-4. **Architecture Details?** → See [ARCHITECTURE_OVERVIEW.md](./REBOOT/2.0%20Reboot%20Post%20Dev%20Reports%20280126/ARCHITECTURE_OVERVIEW.md)
+2. **Development Questions?** → See [DEVELOPMENT_GUIDE.md](./docs/development/DEVELOPMENT_GUIDE.md)
+3. **API Documentation?** → See [API_REFERENCE.md](./docs/development/API_REFERENCE.md)
+4. **Architecture Details?** → See [ARCHITECTURE_OVERVIEW.md](./docs/development/ARCHITECTURE_OVERVIEW.md)
 
 ---
 

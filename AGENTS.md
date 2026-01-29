@@ -68,7 +68,7 @@ This document tells you:
    → How to run tests locally
    → Coverage requirements (>70%)
 
-8. docs/sprints/SPRINT_4_SECURITY_CHECKLIST.md
+8. docs/sprints/round 1/SPRINT_4_SECURITY_CHECKLIST.md
    → Security requirements (96.2% complete)
    → JWT FAIL SECURE pattern
    → Token rotation requirements
@@ -77,7 +77,7 @@ This document tells you:
 
 ### Phase 5: Deployment & Operations (5 minutes)
 ```
-9. docs/sprints/SPRINT_4_DEPLOYMENT_RUNBOOK.md
+9. docs/sprints/round 1/SPRINT_4_DEPLOYMENT_RUNBOOK.md
    → How to deploy to production
    → Pre-deployment checklist
    → Rollback procedures
@@ -97,8 +97,8 @@ This document tells you:
 [ ] Read CONVENTIONS.md
 [ ] Read CONVENTIONS_FRONTEND.md
 [ ] Read TESTING_GUIDE.md
-[ ] Read SPRINT_4_SECURITY_CHECKLIST.md
-[ ] Read SPRINT_4_DEPLOYMENT_RUNBOOK.md
+[ ] Read docs/sprints/round 1/SPRINT_4_SECURITY_CHECKLIST.md
+[ ] Read docs/sprints/round 1/SPRINT_4_DEPLOYMENT_RUNBOOK.md
 [ ] Read AGENTS.md (this file)
 [ ] Ready to work? → Proceed to task assignment
 ```
@@ -128,9 +128,10 @@ GRANTER 2.0/
 │   │   └── TROUBLESHOOTING_QUICK_FIX.md
 │   ├── sprints/                       ← Sprint reports & deployment
 │   │   ├── SPRINT_4_FINAL_REPORT.md
-│   │   ├── SPRINT_4_SECURITY_CHECKLIST.md
-│   │   ├── SPRINT_4_DEPLOYMENT_RUNBOOK.md
-│   │   └── SPRINT_4_GO_LIVE_GUIDE.md
+│   │   ├── round 1/
+│   │   │   ├── SPRINT_4_SECURITY_CHECKLIST.md
+│   │   │   ├── SPRINT_4_DEPLOYMENT_RUNBOOK.md
+│   │   │   └── SPRINT_4_GO_LIVE_GUIDE.md
 │   ├── audits/                        ← Security & architecture audits
 │   ├── proposals/                     ← Initial design proposals
 │   └── project/                       ← Project summaries & conventions
@@ -684,14 +685,14 @@ These violations cause automatic rejection. NO EXCEPTIONS.
 ### 🔐 Security & Compliance
 | Document | What It Contains | When to Read |
 |----------|-----------------|--------------|
-| **SPRINT_4_SECURITY_CHECKLIST.md** | Security requirements, JWT patterns, token rotation | Before security work |
+| **docs/sprints/round 1/SPRINT_4_SECURITY_CHECKLIST.md** | Security requirements, JWT patterns, token rotation | Before security work |
 | **PROPUESTA_SEGURIDAD_DESDE_0.md** | Detailed security implementation guide (deep dive) | If security questions arise |
 
 ### 🚀 Deployment & Operations
 | Document | What It Contains | When to Read |
 |----------|-----------------|--------------|
-| **SPRINT_4_DEPLOYMENT_RUNBOOK.md** | Step-by-step deployment procedures | Before deploying |
-| **SPRINT_4_GO_LIVE_GUIDE.md** | Go-live procedures and schedule | Before go-live |
+| **docs/sprints/round 1/SPRINT_4_DEPLOYMENT_RUNBOOK.md** | Step-by-step deployment procedures | Before deploying |
+| **docs/sprints/round 1/SPRINT_4_GO_LIVE_GUIDE.md** | Go-live procedures and schedule | Before go-live |
 
 ### 📋 Development Documentation (Historical Reference)
 | Document | What It Contains | When to Read |

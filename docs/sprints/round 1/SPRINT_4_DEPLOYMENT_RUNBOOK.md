@@ -5,6 +5,8 @@
 
 ## 🚀 PRODUCTION DEPLOYMENT PROCEDURE
 
+Reference: See `DEPLOYMENT.md` in repo root for CI/CD flow and migration strategy.
+
 ### PRE-DEPLOYMENT CHECKLIST (13:00 - 2 hours before)
 
 ```
@@ -141,7 +143,7 @@ Step 3.5: Deploy Frontend
 
 ```
 Step 4.1: Run Smoke Tests
-  $ npm run test:smoke:all
+  $ npm run test:smoke
 
   Must pass all 5 flows:
   ✅ Auth flow (register, login)
@@ -160,7 +162,7 @@ Step 4.3: Verify Health Checks
   ✅ All services returning HTTP 200
 
 Step 4.4: Spot Check Critical Endpoints
-  $ curl -H "Authorization: Bearer {token}" http://api.example.com/users/me
+  $ curl -H "Authorization: Bearer {token}" http://api.example.com/auth/me
   ✅ Returns user data (HTTP 200)
 
   $ curl http://api.example.com/search?query=test
@@ -239,7 +241,7 @@ Step 5: Verify Rollback
   $ kubectl rollout status deployment/data-service --timeout=5m
 
 Step 6: Run Smoke Tests
-  $ npm run test:smoke:all
+  $ npm run test:smoke
   ✅ All tests should pass on previous version
 
 Step 7: Notify Stakeholders

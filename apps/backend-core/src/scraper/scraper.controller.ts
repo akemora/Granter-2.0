@@ -1,7 +1,12 @@
-import { Controller, Post, Body, UseGuards, BadRequestException } from '@nestjs/common';
-import { ScraperService } from './scraper.service';
+import { Controller, Post, Body, UseGuards, BadRequestException, Param, Get, Query } from '@nestjs/common';
+import { ScraperService, ScraperResult, ScrapePersistResult, ScrapeRunAllResult } from './scraper.service';
 import { XServiceTokenGuard } from '../common/guards/x-service-token.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ScraperQueueService } from '../queue/scraper-queue.service';
+import { ScrapeRequestDto } from './dto/scrape-request.dto';
+import { ScrapeAsyncRequestDto } from './dto/scrape-async-request.dto';
+import { ScrapeLogsQueryDto } from './dto/scrape-logs-query.dto';
+import { ScraperLogEntity } from '../database/entities/scraper-log.entity';
 
 /**
  * Scraper Controller
@@ -10,21 +15,27 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
  * Endpoints for scraping grant data from external websites
  */
 
-export class ScrapeRequestDto {
-  url: string;
-}
-
 export class ScrapeResponseDto {
   success: boolean;
-  pages: any[];
-  method: 'smart' | 'generic' | 'error';
+  pages: ScraperResult['pages'];
+  method: ScraperResult['method'];
   error?: string;
   grantCount: number;
 }
 
+export interface ScrapeAsyncResponseDto {
+  taskId: string;
+  sourceId: string;
+  status: 'queued';
+  message: string;
+}
+
 @Controller('scraper')
 export class ScraperController {
-  constructor(private readonly scraperService: ScraperService) {}
+  constructor(
+    private readonly scraperService: ScraperService,
+    private readonly scraperQueue: ScraperQueueService,
+  ) {}
 
   /**
    * POST /scraper/scrape
@@ -78,22 +89,58 @@ export class ScraperController {
    */
   @Post('scrape-async')
   @UseGuards(XServiceTokenGuard)
-  async scrapeAsync(@Body() dto: ScrapeRequestDto) {
-    if (!dto.url) {
-      throw new BadRequestException('URL is required');
+  async scrapeAsync(@Body() dto: ScrapeAsyncRequestDto): Promise<ScrapeAsyncResponseDto> {
+    if (!dto.sourceId) {
+      throw new BadRequestException('sourceId is required');
     }
 
-    const result = await this.scraperService.scrapeWithFallback(dto.url);
+    try {
+      const result = await this.scraperQueue.enqueueSourceById(dto.sourceId);
+      return {
+        taskId: result.id,
+        sourceId: dto.sourceId,
+        status: 'queued',
+        message: 'Scraping task queued for processing',
+      } as ScrapeAsyncResponseDto;
+    } catch (error) {
+      throw new BadRequestException('Source not found');
+    }
+  }
 
-    // Store result in queue/cache for async processing
-    // TODO: Integrate with queue system (Bull, RabbitMQ, etc.)
+  /**
+   * POST /scraper/run
+   *
+   * Scrape all active sources and persist grants
+   * Protected: Requires JWT token (user authenticated)
+   */
+  @Post('run')
+  @UseGuards(JwtAuthGuard)
+  async runAll(): Promise<ScrapeRunAllResult> {
+    return this.scraperService.runAllActiveSources();
+  }
 
-    return {
-      taskId: `scrape-${Date.now()}`,
-      url: dto.url,
-      status: 'queued',
-      message: 'Scraping task queued for processing',
-    };
+  /**
+   * POST /scraper/source/:id
+   *
+   * Scrape a single source and persist grants
+   * Protected: Requires JWT token (user authenticated)
+   */
+  @Post('source/:id')
+  @UseGuards(JwtAuthGuard)
+  async runSource(@Param('id') id: string): Promise<ScrapePersistResult> {
+    return this.scraperService.runSourceById(id);
+  }
+
+  /**
+   * GET /scraper/source/:id/logs
+   *
+   * Retrieve recent scrape logs for a source
+   * Protected: Requires JWT token (user authenticated)
+   */
+  @Get('source/:id/logs')
+  @UseGuards(JwtAuthGuard)
+  async getSourceLogs(@Param('id') id: string, @Query() query: ScrapeLogsQueryDto): Promise<ScraperLogEntity[]> {
+    return this.scraperService.getLogsForSource(id, query.limit);
   }
 
   private isValidUrl(url: string): boolean {
