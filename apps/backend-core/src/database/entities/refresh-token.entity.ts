@@ -2,7 +2,8 @@ import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, Primary
 import { UserEntity } from './user.entity';
 
 @Entity('refresh_tokens')
-@Index('IDX_refresh_tokens_user', ['userId'], { unique: true })
+@Index('IDX_refresh_tokens_user', ['userId'])
+@Index('IDX_refresh_tokens_token', ['tokenId'], { unique: true })
 export class RefreshTokenEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

@@ -32,6 +32,7 @@ describe('AuthService', () => {
       findOne: jest.fn(),
       create: jest.fn(),
       save: jest.fn(),
+      update: jest.fn(),
     } as any;
 
     jwtService = {
@@ -142,20 +143,40 @@ describe('AuthService', () => {
     expect(result.tokens.refreshToken).toBe('new-refresh-token');
   });
 
-  it('revokes refresh token on reuse detection', async () => {
+  it('revokes refresh token on invalid hash', async () => {
     (jwtService as any).verifyAsync.mockResolvedValue({ sub: 'user-1', type: 'refresh', jti: 'token-1' });
     userRepo.findOne.mockResolvedValue({ id: 'user-1', email: 'user@test.com' } as UserEntity);
     refreshTokenRepo.findOne.mockResolvedValue({
       userId: 'user-1',
-      tokenId: 'token-2',
+      tokenId: 'token-1',
       tokenHash: 'hashed-token',
       expiresAt: new Date(Date.now() + 60_000),
       revokedAt: null,
     } as RefreshTokenEntity);
+    (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
     await expect(service.refresh('refresh-token')).rejects.toThrow(UnauthorizedException);
-    expect(refreshTokenRepo.save).toHaveBeenCalled();
-    const savedRecord = (refreshTokenRepo.save as jest.Mock).mock.calls[0][0] as RefreshTokenEntity;
-    expect(savedRecord.revokedAt).toBeInstanceOf(Date);
+    expect(refreshTokenRepo.update).toHaveBeenCalledWith(
+      { userId: 'user-1' },
+      { revokedAt: expect.any(Date) },
+    );
+  });
+
+  it('revokes all tokens when refresh token is already revoked', async () => {
+    (jwtService as any).verifyAsync.mockResolvedValue({ sub: 'user-1', type: 'refresh', jti: 'token-1' });
+    userRepo.findOne.mockResolvedValue({ id: 'user-1', email: 'user@test.com' } as UserEntity);
+    refreshTokenRepo.findOne.mockResolvedValue({
+      userId: 'user-1',
+      tokenId: 'token-1',
+      tokenHash: 'hashed-token',
+      expiresAt: new Date(Date.now() + 60_000),
+      revokedAt: new Date(),
+    } as RefreshTokenEntity);
+
+    await expect(service.refresh('refresh-token')).rejects.toThrow(UnauthorizedException);
+    expect(refreshTokenRepo.update).toHaveBeenCalledWith(
+      { userId: 'user-1' },
+      { revokedAt: expect.any(Date) },
+    );
   });
 });

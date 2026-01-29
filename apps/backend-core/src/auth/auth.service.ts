@@ -83,12 +83,13 @@ export class AuthService {
 
   async revokeRefreshToken(refreshToken: string): Promise<void> {
     const payload = await this.verifyRefreshToken(refreshToken);
-    const record = await this.refreshTokenRepo.findOne({ where: { userId: payload.sub } });
+    const record = await this.refreshTokenRepo.findOne({
+      where: { userId: payload.sub, tokenId: payload.jti },
+    });
     if (!record) {
       return;
     }
-    record.revokedAt = new Date();
-    await this.refreshTokenRepo.save(record);
+    await this.revokeRecord(record, this.refreshTokenRepo);
   }
 
   async getCurrentUser(userId: string): Promise<{ id: string; email: string }> {
@@ -126,27 +127,20 @@ export class AuthService {
     expiresAt: Date,
   ): Promise<void> {
     const tokenHash = await bcrypt.hash(token, 12);
-    const existing = await repo.findOne({ where: { userId } });
-    if (existing) {
-      existing.tokenHash = tokenHash;
-      existing.tokenId = tokenId;
-      existing.expiresAt = expiresAt;
-      existing.revokedAt = null;
-      await repo.save(existing);
-      return;
-    }
-
-    const record = repo.create({ userId, tokenHash, tokenId, expiresAt });
+    const record = repo.create({ userId, tokenHash, tokenId, expiresAt, revokedAt: null });
     await repo.save(record);
   }
 
   private async assertRefreshTokenValid(
     record: RefreshTokenEntity | null,
     token: string,
-    tokenId: string,
+    userId: string,
     repo: Repository<RefreshTokenEntity>,
   ): Promise<void> {
     if (!record || record.revokedAt) {
+      if (record?.revokedAt) {
+        await this.revokeAllTokensForUser(userId, repo);
+      }
       throw new UnauthorizedException('Invalid refresh token');
     }
 
@@ -154,14 +148,9 @@ export class AuthService {
       throw new UnauthorizedException('Refresh token expired');
     }
 
-    if (record.tokenId !== tokenId) {
-      await this.revokeRecord(record, repo);
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
     const matches = await bcrypt.compare(token, record.tokenHash);
     if (!matches) {
-      await this.revokeRecord(record, repo);
+      await this.revokeAllTokensForUser(userId, repo);
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
@@ -181,8 +170,12 @@ export class AuthService {
   private async rotateRefreshToken(user: UserEntity, refreshToken: string, tokenId: string): Promise<AuthTokens> {
     return this.refreshTokenRepo.manager.transaction(async (manager) => {
       const repo = manager.getRepository(RefreshTokenEntity);
-      const record = await repo.findOne({ where: { userId: user.id }, lock: { mode: 'pessimistic_write' } });
-      await this.assertRefreshTokenValid(record, refreshToken, tokenId, repo);
+      const record = await repo.findOne({
+        where: { userId: user.id, tokenId },
+        lock: { mode: 'pessimistic_write' },
+      });
+      await this.assertRefreshTokenValid(record, refreshToken, user.id, repo);
+      await this.revokeRecord(record, repo);
       return this.issueTokens(user, repo);
     });
   }
@@ -190,6 +183,10 @@ export class AuthService {
   private async revokeRecord(record: RefreshTokenEntity, repo: Repository<RefreshTokenEntity>): Promise<void> {
     record.revokedAt = new Date();
     await repo.save(record);
+  }
+
+  private async revokeAllTokensForUser(userId: string, repo: Repository<RefreshTokenEntity>): Promise<void> {
+    await repo.update({ userId }, { revokedAt: new Date() });
   }
 
   private isUniqueViolation(error: unknown): boolean {
