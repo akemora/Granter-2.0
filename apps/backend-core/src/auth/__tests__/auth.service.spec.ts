@@ -123,6 +123,34 @@ describe('AuthService', () => {
     await expect(service.refresh('bad-token')).rejects.toThrow(UnauthorizedException);
   });
 
+  it('rejects refresh when token is missing jti', async () => {
+    (jwtService as any).verifyAsync.mockResolvedValue({ sub: 'user-1', type: 'refresh' });
+
+    await expect(service.refresh('bad-token')).rejects.toThrow(UnauthorizedException);
+    expect(userRepo.findOne).not.toHaveBeenCalled();
+  });
+
+  it('rejects refresh when user does not exist', async () => {
+    (jwtService as any).verifyAsync.mockResolvedValue({ sub: 'user-1', type: 'refresh', jti: 'token-1' });
+    userRepo.findOne.mockResolvedValue(null);
+
+    await expect(service.refresh('refresh-token')).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('rejects refresh when token is expired', async () => {
+    (jwtService as any).verifyAsync.mockResolvedValue({ sub: 'user-1', type: 'refresh', jti: 'token-1' });
+    userRepo.findOne.mockResolvedValue({ id: 'user-1', email: 'user@test.com' } as UserEntity);
+    refreshTokenRepo.findOne.mockResolvedValue({
+      userId: 'user-1',
+      tokenId: 'token-1',
+      tokenHash: 'hashed-token',
+      expiresAt: new Date(Date.now() - 60_000),
+      revokedAt: null,
+    } as RefreshTokenEntity);
+
+    await expect(service.refresh('refresh-token')).rejects.toThrow(UnauthorizedException);
+  });
+
   it('issues new tokens on valid refresh', async () => {
     (jwtService as any).verifyAsync.mockResolvedValue({ sub: 'user-1', type: 'refresh', jti: 'token-1' });
     userRepo.findOne.mockResolvedValue({ id: 'user-1', email: 'user@test.com' } as UserEntity);

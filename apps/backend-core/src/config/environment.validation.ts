@@ -1,13 +1,28 @@
-import * as joi from "joi";
+import * as joi from 'joi';
 
 export const validationSchema = joi.object({
-  NODE_ENV: joi
-    .string()
-    .valid("development", "production", "test")
-    .default("development"),
+  NODE_ENV: joi.string().valid('development', 'production', 'test').default('development'),
   DATABASE_URL: joi.string().uri().required(),
   JWT_SECRET: joi.string().min(32).required(),
   SERVICE_TOKEN: joi.string().min(32).required(),
   GEMINI_API_KEY: joi.string().optional(),
+  FRONTEND_URL: joi.string().uri().optional(),
+  DATA_SERVICE_URL: joi.string().uri().optional(),
   PORT: joi.number().default(3001),
+  REDIS_HOST: joi.string().optional(),
+  REDIS_PORT: joi.number().optional(),
+  SCRAPER_INTERVAL_MINUTES: joi.number().optional(),
+  SCRAPER_SCHEDULE_ENABLED: joi.string().optional(),
+  SCRAPER_RUN_ON_START: joi.string().optional(),
+  REFRESH_TOKEN_CLEANUP_ENABLED: joi.string().optional(),
+  REFRESH_TOKEN_CLEANUP_INTERVAL_MINUTES: joi.number().optional(),
+  REFRESH_TOKEN_RETENTION_DAYS: joi.number().optional(),
+  NOTIFICATIONS_MAX_PER_RUN: joi.number().optional(),
+  EMAIL_HOST: joi.string().optional(),
+  EMAIL_PORT: joi.number().optional(),
+  EMAIL_USER: joi.string().optional(),
+  EMAIL_PASSWORD: joi.string().optional(),
+  EMAIL_FROM: joi.string().optional(),
+  EMAIL_SECURE: joi.string().optional(),
+  TELEGRAM_BOT_TOKEN: joi.string().optional(),
 });

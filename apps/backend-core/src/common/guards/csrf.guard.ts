@@ -41,7 +41,7 @@ export class CsrfGuard implements CanActivate {
   }
 
   private isAuthBootstrapRoute(path: string): boolean {
-    return path.startsWith('/auth/login') || path.startsWith('/auth/register');
+    return /^\/auth\/(login|register)$/.test(path);
   }
 
   private hasServiceToken(request: Request): boolean {

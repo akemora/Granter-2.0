@@ -22,6 +22,16 @@ describe('CsrfGuard', () => {
     expect(guard.canActivate(context)).toBe(true);
   });
 
+  it('does not allow auth sub-routes without csrf', () => {
+    const context = makeContext({
+      method: 'POST',
+      path: '/auth/login/extra',
+      cookies: { [ACCESS_TOKEN_COOKIE]: 'access' },
+      headers: {},
+    });
+    expect(() => guard.canActivate(context)).toThrow(ForbiddenException);
+  });
+
   it('allows requests with service token', () => {
     const context = makeContext({
       method: 'POST',

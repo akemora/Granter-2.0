@@ -106,6 +106,13 @@ JWT_SECRET=your_32_char_secret_string
 NODE_ENV=development
 ```
 
+Optional maintenance variables:
+```env
+REFRESH_TOKEN_CLEANUP_ENABLED=true
+REFRESH_TOKEN_CLEANUP_INTERVAL_MINUTES=1440
+REFRESH_TOKEN_RETENTION_DAYS=30
+```
+
 Generate JWT_SECRET:
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
@@ -304,13 +311,13 @@ docker compose down
 
 See these files for detailed info:
 
-- **README.md** - Project overview
-- **DEVELOPMENT_GUIDE.md** - Development workflow
-- **API_REFERENCE.md** - API endpoints
-- **ARCHITECTURE_OVERVIEW.md** - System design
-- **TESTING_GUIDE.md** - Testing procedures
+- **[README.md](./README.md)** - Project overview
+- **[DEVELOPMENT_GUIDE.md](./docs/development/DEVELOPMENT_GUIDE.md)** - Development workflow
+- **[API_REFERENCE.md](./docs/development/API_REFERENCE.md)** - API endpoints
+- **[ARCHITECTURE_OVERVIEW.md](./docs/development/ARCHITECTURE_OVERVIEW.md)** - System design
+- **[TESTING_GUIDE.md](./docs/development/TESTING_GUIDE.md)** - Testing procedures
 
-All in: `REBOOT/2.0 Reboot Post Dev Reports 280126/`
+All in: `docs/development/`
 
 ---
 
