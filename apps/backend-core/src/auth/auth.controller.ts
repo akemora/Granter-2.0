@@ -1,4 +1,15 @@
-import { Body, Controller, Get, HttpCode, Logger, Post, Request, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Logger,
+  Post,
+  Request,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { randomBytes } from 'crypto';
 import { Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
@@ -22,9 +33,7 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(201)
-  async register(
-    @Body() body: AuthRegisterDto,
-  ): Promise<{ message: string }> {
+  async register(@Body() body: AuthRegisterDto): Promise<{ message: string }> {
     await this.authService.register(body);
     return { message: 'Si el correo es válido, ya puedes iniciar sesión.' };
   }

@@ -1,6 +1,12 @@
 import { AuthController } from '../auth.controller';
 import { AuthService } from '../auth.service';
-import { ACCESS_TOKEN_COOKIE, ACCESS_TOKEN_TTL, CSRF_COOKIE, REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_TTL_DAYS } from '../auth.constants';
+import {
+  ACCESS_TOKEN_COOKIE,
+  ACCESS_TOKEN_TTL,
+  CSRF_COOKIE,
+  REFRESH_TOKEN_COOKIE,
+  REFRESH_TOKEN_TTL_DAYS,
+} from '../auth.constants';
 
 const parseAccessTokenTtl = (value: string): number => {
   if (value.endsWith('m')) {

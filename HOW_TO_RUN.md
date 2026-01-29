@@ -106,6 +106,13 @@ JWT_SECRET=your_32_char_secret_string
 NODE_ENV=development
 ```
 
+Integration variables (recommended for data-service & discovery):
+```env
+SERVICE_TOKEN=service-token-32-char-minimum
+DATA_SERVICE_URL=http://localhost:8000
+BACKEND_URL=http://localhost:3001
+```
+
 Optional maintenance variables:
 ```env
 REFRESH_TOKEN_CLEANUP_ENABLED=true

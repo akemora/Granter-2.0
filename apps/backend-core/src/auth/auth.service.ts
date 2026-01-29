@@ -100,7 +100,10 @@ export class AuthService {
     return { id: user.id, email: user.email };
   }
 
-  private async issueTokens(user: UserEntity, repo: Repository<RefreshTokenEntity> = this.refreshTokenRepo): Promise<AuthTokens> {
+  private async issueTokens(
+    user: UserEntity,
+    repo: Repository<RefreshTokenEntity> = this.refreshTokenRepo,
+  ): Promise<AuthTokens> {
     const tokenId = randomUUID();
     const accessToken = await this.signAccessToken(user);
     const refreshToken = await this.signRefreshToken(user, tokenId);

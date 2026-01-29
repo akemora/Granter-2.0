@@ -184,10 +184,7 @@ describe('AuthService', () => {
     (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
     await expect(service.refresh('refresh-token')).rejects.toThrow(UnauthorizedException);
-    expect(refreshTokenRepo.update).toHaveBeenCalledWith(
-      { userId: 'user-1' },
-      { revokedAt: expect.any(Date) },
-    );
+    expect(refreshTokenRepo.update).toHaveBeenCalledWith({ userId: 'user-1' }, { revokedAt: expect.any(Date) });
   });
 
   it('revokes all tokens when refresh token is already revoked', async () => {
@@ -202,9 +199,6 @@ describe('AuthService', () => {
     } as RefreshTokenEntity);
 
     await expect(service.refresh('refresh-token')).rejects.toThrow(UnauthorizedException);
-    expect(refreshTokenRepo.update).toHaveBeenCalledWith(
-      { userId: 'user-1' },
-      { revokedAt: expect.any(Date) },
-    );
+    expect(refreshTokenRepo.update).toHaveBeenCalledWith({ userId: 'user-1' }, { revokedAt: expect.any(Date) });
   });
 });
