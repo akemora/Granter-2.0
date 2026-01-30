@@ -106,9 +106,9 @@ Rate Limiting: IMPLEMENTED (global + login throttle)
 ## Validation
 
 - [x] README, HOW_TO_RUN, API_REFERENCE have no non-existent routes.
-- [ ] Request/response examples work with current backend.
-- [ ] `npm run lint` passes.
-- [ ] `npm run type-check` passes.
+- [x] Request/response examples work with current backend.
+- [x] `npm run lint` passes.
+- [x] `npm run type-check` passes.
 
 ---
 

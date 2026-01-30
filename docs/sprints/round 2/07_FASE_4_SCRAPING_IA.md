@@ -150,7 +150,7 @@ interface SourceHandler {
 
 ## Validation
 
-- [ ] Tests pass: `npm run test`.
+- [x] Tests pass: `npm run test`.
 - [x] HTML sources work (existing behavior).
 - [x] API sources work (if implemented).
 - [x] RSS sources work (if implemented).

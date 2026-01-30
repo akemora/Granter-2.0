@@ -165,11 +165,11 @@ sourceId: UUID (nullable, FK to sources)
 
 ## Validation
 
-- [ ] Tests pass: `npm run test`.
+- [x] Tests pass: `npm run test`.
 - [x] Search filters by sector correctly.
 - [x] Search filters by status correctly.
 - [x] Docs updated (API_REFERENCE) with new filter params.
-- [ ] `npm run type-check` passes.
+- [x] `npm run type-check` passes.
 
 ---
 

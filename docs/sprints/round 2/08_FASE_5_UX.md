@@ -162,12 +162,12 @@ Complete the UI for all promised functionalities: real advanced filters, grant d
 
 ## Validation
 
-- [ ] Tests pass: `npm run test`.
+- [x] Tests pass: `npm run test`.
 - [x] Deadline filters work end-to-end.
 - [x] Status filter works end-to-end.
 - [x] Grant detail page shows all fields.
 - [x] Scrape per source works from UI.
-- [ ] Manual flow validation passes.
+- [x] Manual flow validation passes (confirmed 2026-01-29).
 
 ---
 

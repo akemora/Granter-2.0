@@ -199,7 +199,7 @@ async getProfile(): Promise<UserProfileEntity> {
 
 ## Validation
 
-- [ ] Tests pass: `npm run test`.
+- [x] Tests pass: `npm run test`.
 - [x] Two different users see different profiles.
 - [x] Recommendations are personalized per user.
 - [x] Notifications respect each user's settings.

@@ -95,11 +95,11 @@ FASE 3             FASE 4                                        │
 
 ## Definition of Done (for each phase)
 
-- [ ] All checklist items are completed and validated.
-- [ ] Tests and lint pass for affected areas.
-- [ ] Docs updated to reflect the actual behavior.
-- [ ] Any new env vars or configs added to .env.example.
-- [ ] ADR documented for any architectural decisions made.
+- [x] All checklist items are completed and validated.
+- [x] Tests and lint pass for affected areas.
+- [x] Docs updated to reflect the actual behavior.
+- [x] Any new env vars or configs added to .env.example.
+- [x] ADR documented for any architectural decisions made.
 
 ---
 
